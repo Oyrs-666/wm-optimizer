@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WM优化助手 - 专业Windows性能调优工具</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:#c0c0d0;font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;overflow-x:hidden}
+/* 粒子背景 */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* 导航 */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,20,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.05)}
+.nav-logo{font-size:20px;font-weight:700;color:#e0e0f0;letter-spacing:1px}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{color:#888;text-decoration:none;font-size:14px;transition:color .2s}
+.nav-links a:hover{color:#c0c0e0}
+.nav-btn{padding:8px 20px;border-radius:8px;background:linear-gradient(135deg,#4a8aba,#6a6aca);color:#fff;font-size:14px;font-weight:600;text-decoration:none;transition:all .3s}
+.nav-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(74,138,186,.4)}
+
+/* Hero */
+.hero{position:relative;z-index:1;text-align:center;padding:140px 20px 80px}
+.hero h1{font-size:52px;font-weight:800;background:linear-gradient(135deg,#80c8f0,#c0e0ff,#a0c8f0,#d0b0f0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px;letter-spacing:2px}
+.hero p{font-size:18px;color:#7a7a90;max-width:600px;margin:0 auto 32px;line-height:1.6}
+.hero-tag{display:inline-block;padding:6px 16px;border-radius:20px;border:1px solid rgba(100,180,240,.2);font-size:13px;color:#6a9aba;margin-bottom:24px}
+.hero-ad{font-size:20px;font-weight:600;color:rgba(180,200,230,.8);margin-top:16px;letter-spacing:2px}
+.hero-ad span{color:#8ab8d8}
+
+/* 功能 */
+.features{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:40px 20px}
+.features h2{text-align:center;font-size:32px;font-weight:700;color:#e0e0f0;margin-bottom:40px}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.feature-card{padding:28px;border-radius:16px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);transition:all .35s}
+.feature-card:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);transform:translateY(-2px)}
+.feature-icon{font-size:28px;margin-bottom:12px}
+.feature-card h3{font-size:17px;font-weight:650;color:#d0d0e0;margin-bottom:8px}
+.feature-card p{font-size:13px;color:#888;line-height:1.55}
+
+/* 更新日志 */
+.changelog{position:relative;z-index:1;max-width:700px;margin:60px auto;padding:20px}
+.changelog h2{text-align:center;font-size:28px;font-weight:700;color:#e0e0f0;margin-bottom:32px}
+.cl-item{padding:16px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.cl-version{font-size:15px;font-weight:650;color:#8ab8d8}
+.cl-date{font-size:12px;color:#666;margin-left:12px}
+.cl-changes{margin-top:6px;font-size:13px;color:#888;line-height:1.6}
+.cl-changes li{margin:3px 0;list-style:none}
+.cl-changes li::before{content:'+ ';color:#5a9a7a}
+
+/* 底部 */
+.footer{text-align:center;padding:40px;font-size:13px;color:#555;border-top:1px solid rgba(255,255,255,.04)}
+
+/* 响应式 */
+@media(max-width:768px){
+  .hero h1{font-size:32px}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+
+<nav class="nav">
+  <div class="nav-logo">WM 优化助手</div>
+  <ul class="nav-links">
+    <li><a href="#features">功能</a></li>
+    <li><a href="#changelog">更新日志</a></li>
+    <li><a href="#download">下载</a></li>
+  </ul>
+  <a href="#download" class="nav-btn">立即下载</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-tag">v1.0.0 · Windows 10/11</div>
+  <h1>WM 优化助手</h1>
+  <p>一站式 Windows 性能调优工具。CPU 核心调度、进程优化、内存清理、显卡驱动管理、ICC 色彩滤镜——专为电竞玩家打造</p>
+  <div class="hero-ad">用心调试专业优化 · 以性能表达用数据说话<br><span>—— 浩博电竞优化团队</span></div>
+</section>
+
+<section class="features" id="features">
+  <h2>核心功能</h2>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">&#x2699;</div>
+      <h3>核心调度</h3>
+      <p>自定义 CPU 亲和性，为游戏进程分配专属核心。保存预设，开机自动应用</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#x2B21;</div>
+      <h3>进程优化</h3>
+      <p>对标 Process Lasso。CPU/内存/IO 优先级调整，一键终止，预设管理</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#x25C8;</div>
+      <h3>内存清理</h3>
+      <p>Mem Reduct 级深度清理。Standby List 清空、间隔自动清理、阈值触发</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#x25A3;</div>
+      <h3>显卡驱动</h3>
+      <p>自动检测显卡型号，推荐最稳定驱动版本。一键跳转官网下载</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#x25C6;</div>
+      <h3>显卡优化</h3>
+      <p>内置 nvidiaProfileInspector，一键导入 .nip 优化预设</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#x2600;</div>
+      <h3>ICC 色彩滤镜</h3>
+      <p>Gamma 校正、色温调节、RGB 通道增益、暗部平衡。预设一键切换</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#x26A1;</div>
+      <h3>电源计划</h3>
+      <p>一键导入高性能电源方案。DUN、Intel、X3D 多平台预设</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#x1F6E0;</div>
+      <h3>系统优化</h3>
+      <p>禁用隐私服务、关闭安全中心、管理开机启动项。一键应用</p>
+    </div>
+  </div>
+</section>
+
+<section class="changelog" id="changelog">
+  <h2>更新日志</h2>
+  <div class="cl-item">
+    <span class="cl-version">v1.0.0</span><span class="cl-date">2026-06-20</span>
+    <ul class="cl-changes">
+      <li>首个正式版本发布</li>
+      <li>核心调度 + CPU 亲和性管理</li>
+      <li>进程优化（对标 Process Lasso）</li>
+      <li>Mem Reduct 级内存深度清理</li>
+      <li>显卡驱动检测 + 推荐 + 下载</li>
+      <li>nvidiaProfileInspector .nip 导入</li>
+      <li>ICC 色彩滤镜（Gamma/色温/RGB增益）</li>
+      <li>电源计划一键导入</li>
+      <li>系统优化（服务/隐私/启动项）</li>
+      <li>赛博朋克风格 UI + 粒子特效</li>
+      <li>自定义光标 + 鼠标拖尾</li>
+      <li>实时硬件监控环形仪表</li>
+      <li>自动更新功能</li>
+    </ul>
+  </div>
+</section>
+
+<section id="download" style="text-align:center;padding:40px 20px 80px">
+  <h2 style="font-size:28px;font-weight:700;color:#e0e0f0;margin-bottom:16px">下载 WM 优化助手</h2>
+  <p style="color:#888;margin-bottom:24px">支持 Windows 10/11 x64 · 完全免费</p>
+  <a href="#" class="nav-btn" style="font-size:16px;padding:14px 36px;">下载安装包 (EXE)</a>
+  <p style="color:#666;font-size:12px;margin-top:12px">当前版本 v1.0.0 · 约 200MB</p>
+</section>
+
+<footer class="footer">
+  &copy; 2026 浩博电竞优化团队 · WM 优化助手 · 用心调试，用数据说话
+</footer>
+
+<script>
+// 粒子背景
+var cv = document.getElementById('bg-canvas'), ctx = cv.getContext('2d'), particles = [];
+function resize(){cv.width=window.innerWidth;cv.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+for(var i=0;i<40;i++)particles.push({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*2+.5,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3});
+(function loop(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  for(var i=0;i<particles.length;i++){var p=particles[i];p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=cv.width;if(p.x>cv.width)p.x=0;if(p.y<0)p.y=cv.height;if(p.y>cv.height)p.y=0;
+    var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);g.addColorStop(0,'rgba(100,180,240,'+(.3+Math.sin(Date.now()/2000+i)*.15)+')');g.addColorStop(1,'transparent');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,p.r*3,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(150,200,240,.4)';ctx.fill();}
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
