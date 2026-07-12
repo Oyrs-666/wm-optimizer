@@ -47,6 +47,17 @@ function md5(str: string): string {
 }
 
 serve(async (req: Request) => {
+  // CORS 预检
+  if (req.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type"
+    }});
+  }
+  const corsHeaders = { "Access-Control-Allow-Origin": "*" };
+  const ok = (body: string, status = 200, extra = {}) => new Response(body, { status, headers: { ...corsHeaders, ...extra } });
+
   const url = new URL(req.url);
   const params: Record<string, string> = {};
 
@@ -66,11 +77,11 @@ serve(async (req: Request) => {
     try {
       const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
       const { data, error } = await supabase.from("users").select("email").limit(1);
-      return new Response(JSON.stringify({ ok: !error, dbConnected: !!data }), {
+      return ok(JSON.stringify({ ok: !error, dbConnected: !!data }), {
         status: 200, headers: { "Content-Type": "application/json" }
       });
     } catch (e) {
-      return new Response(JSON.stringify({ ok: false, error: String(e) }), {
+      return ok(JSON.stringify({ ok: false, error: String(e) }), {
         status: 200, headers: { "Content-Type": "application/json" }
       });
     }
@@ -81,38 +92,38 @@ serve(async (req: Request) => {
     try {
       const body = await req.json();
       const email = body.email, days = body.days || 30, orderNo = body.orderNo || "";
-      if (!email || !orderNo.startsWith("WM")) return new Response("fail");
+      if (!email || !orderNo.startsWith("WM")) return ok("fail");
       const ts = parseInt(orderNo.substring(2)) || 0;
-      if (Date.now() - ts > 86400000) return new Response("fail");
+      if (Date.now() - ts > 86400000) return ok("fail");
       const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
       // 防重
       const { data: existing } = await supabase.from("settings").select("config").eq("email", "order:" + orderNo).limit(1);
-      if (existing && existing.length > 0) return new Response("fail");
+      if (existing && existing.length > 0) return ok("fail");
       // 检查用户存在
       const { data: users } = await supabase.from("users").select("vip_expiry").eq("email", email).limit(1);
-      if (!users || users.length === 0) return new Response("fail");
+      if (!users || users.length === 0) return ok("fail");
       // 存入审核队列
       await supabase.from("settings").insert({
         email: "pending:" + orderNo,
         config: { email, days, orderNo, submittedAt: new Date().toISOString(), status: "pending" }
       });
-      return new Response("pending");
-    } catch (_) { return new Response("fail"); }
+      return ok("pending");
+    } catch (_) { return ok("fail"); }
   }
 
   // 管理员批准（需要 admin key）
   if (url.searchParams.get("approve") === "1") {
     try {
       const body = await req.json();
-      if (body.key !== "wm-admin-2026") return new Response("unauthorized");
+      if (body.key !== "wm-admin-2026") return ok("unauthorized");
       const orderNo = body.orderNo;
       const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
       const { data: rows } = await supabase.from("settings").select("config").eq("email", "pending:" + orderNo).limit(1);
-      if (!rows || rows.length === 0) return new Response("not_found");
+      if (!rows || rows.length === 0) return ok("not_found");
       const cfg = rows[0].config;
       // 激活 VIP
       const { data: users } = await supabase.from("users").select("vip_expiry").eq("email", cfg.email).limit(1);
-      if (!users || users.length === 0) return new Response("fail");
+      if (!users || users.length === 0) return ok("fail");
       const now = new Date();
       let expiry = users[0].vip_expiry ? new Date(users[0].vip_expiry) : now;
       if (isNaN(expiry.getTime()) || expiry < now) expiry = now;
@@ -121,8 +132,8 @@ serve(async (req: Request) => {
       // 标记为已批准 + 防重
       await supabase.from("settings").insert({ email: "order:" + orderNo, config: { usedBy: cfg.email, approvedAt: now.toISOString() } });
       await supabase.from("settings").delete().eq("email", "pending:" + orderNo);
-      return new Response("approved");
-    } catch (_) { return new Response("fail"); }
+      return ok("approved");
+    } catch (_) { return ok("fail"); }
   }
 
   // 管理员查看待审核列表
@@ -131,27 +142,27 @@ serve(async (req: Request) => {
       const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
       const { data: rows } = await supabase.from("settings").select("config").like("email", "pending:%");
       const list = (rows || []).map(r => r.config);
-      return new Response(JSON.stringify(list), { status: 200, headers: { "Content-Type": "application/json" } });
-    } catch (_) { return new Response("[]", { status: 200, headers: { "Content-Type": "application/json" } }); }
+      return ok(JSON.stringify(list), { status: 200, headers: { "Content-Type": "application/json" } });
+    } catch (_) { return ok("[]", { status: 200, headers: { "Content-Type": "application/json" } }); }
   }
 
   // === 支付回调（ezfpy 异步通知 + 官网跳转回调）===
   const tradeStatus = params["trade_status"] || params["status"] || "";
   const isSuccess = tradeStatus === "TRADE_SUCCESS" || tradeStatus === "SUCCESS";
-  if (!isSuccess) return new Response("fail");
+  if (!isSuccess) return ok("fail");
 
   // 验证 ezfpy 签名
   const sign = params["sign"] || "";
   if (sign) {
-    const signKeys = Object.keys(params).filter(k => k !== "sign" && k !== "sign_type" && params[k] !== "").sort();
+    const signKeys = Object.keys(params).filter(k => k !== "sign" && k !== "sign_type").sort();
     const signStr = signKeys.map(k => k + "=" + params[k]).join("&");
     const expected = md5(signStr + "bhn8q3o0r7Z3OMWyRNs12OpZrx9Zj8vH");
-    if (sign !== expected) return new Response("fail");
+    if (sign !== expected) return ok("fail");
   }
 
   try {
     const email = params["param"] || params["attach"] || "";
-    if (!email) return new Response("fail");
+    if (!email) return ok("fail");
 
     const days = parseDays(params["name"] || params["subject"] || "30天");
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -159,10 +170,10 @@ serve(async (req: Request) => {
     const outTradeNo = params["out_trade_no"] || "";
     if (outTradeNo) {
       const { data: dup } = await supabase.from("settings").select("config").eq("email", "order:" + outTradeNo).limit(1);
-      if (dup && dup.length > 0) return new Response("success"); // 已处理，返回 success 避免重复通知
+      if (dup && dup.length > 0) return ok("success"); // 已处理，返回 success 避免重复通知
     }
     const { data: users } = await supabase.from("users").select("vip_expiry").eq("email", email).limit(1);
-    if (!users || users.length === 0) return new Response("fail");
+    if (!users || users.length === 0) return ok("fail");
 
     const now = new Date();
     let expiry = users[0].vip_expiry ? new Date(users[0].vip_expiry) : now;
@@ -173,8 +184,8 @@ serve(async (req: Request) => {
     if (outTradeNo) {
       await supabase.from("settings").insert({ email: "order:" + outTradeNo, config: { usedBy: email, days, at: now.toISOString() } });
     }
-    return new Response("success");
+    return ok("success");
   } catch (_) {
-    return new Response("fail");
+    return ok("fail");
   }
 });
