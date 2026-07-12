@@ -102,7 +102,7 @@ serve(async (req: Request) => {
     }
   }
 
-  // 用户提交开通申请（进入审核队列）
+  // App 自动激活（支付后15秒触发，带订单号防重）
   if (url.searchParams.get("activate") === "1") {
     try {
       const body = await req.json();
@@ -114,15 +114,16 @@ serve(async (req: Request) => {
       // 防重
       const { data: existing } = await supabase.from("settings").select("config").eq("email", "order:" + orderNo).limit(1);
       if (existing && existing.length > 0) return ok("fail");
-      // 检查用户存在
       const { data: users } = await supabase.from("users").select("vip_expiry").eq("email", email).limit(1);
       if (!users || users.length === 0) return ok("fail");
-      // 存入审核队列
-      await supabase.from("settings").insert({
-        email: "pending:" + orderNo,
-        config: { email, days, orderNo, submittedAt: new Date().toISOString(), status: "pending" }
-      });
-      return ok("pending");
+      // 直接激活
+      const now = new Date();
+      let expiry = users[0].vip_expiry ? new Date(users[0].vip_expiry) : now;
+      if (isNaN(expiry.getTime()) || expiry < now) expiry = now;
+      expiry.setDate(expiry.getDate() + days);
+      await supabase.from("users").update({ vip_expiry: expiry.toISOString() }).eq("email", email);
+      await supabase.from("settings").insert({ email: "order:" + orderNo, config: { usedBy: email, days, at: now.toISOString() } });
+      return ok("success");
     } catch (_) { return ok("fail"); }
   }
 
