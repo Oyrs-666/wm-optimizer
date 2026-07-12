@@ -7,7 +7,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SUPABASE_URL = "https://migbxhwvgcddtlhmqtry.supabase.co";
-const SUPABASE_SERVICE_KEY = "sb_publishable_yNJ2_XbCO8ZU2OI-Ee2UTg_ekDPHPom"; // 需要替换为 service_role key
+const SUPABASE_SERVICE_KEY = "填你的secret_key"; // 在Supabase后台 Settings → API 复制
 
 // ezfpy 商户密钥
 const EZFPY_KEY = "bhn8q3o0r7Z3OMWyRNs12OpZrx9Zj8vH";
