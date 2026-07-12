@@ -12,7 +12,7 @@ const PAY_CONFIG = {
   key: 'bhn8q3o0r7Z3OMWyRNs12OpZrx9Zj8vH',
   api: 'https://www.ezfpy.cn/submit.php',
   api_mapi: 'https://www.ezfpy.cn/mapi.php',
-  notify_url: 'https://wm-optimizer.vercel.app/api/pay/callback',
+  notify_url: 'https://wm-optimizer-git-master-dy-wmm.vercel.app/api/pay/callback',
   return_url: 'https://oyrs-666.github.io/wm-optimizer'
 };
 
