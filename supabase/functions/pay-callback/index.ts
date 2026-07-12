@@ -79,6 +79,21 @@ serve(async (req: Request) => {
     } catch (_) {}
   }
 
+  // 付款前存储订单→邮箱映射（解决 ezfpy 不返回 param 字段的问题）
+  if (url.searchParams.get("store") === "1") {
+    try {
+      const body = await req.json();
+      const orderNo = body.orderNo, email = body.email;
+      if (!orderNo || !email) return ok("fail");
+      const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+      await supabase.from("settings").insert({
+        email: "pay:" + orderNo,
+        config: { email, createdAt: new Date().toISOString() }
+      });
+      return ok("ok");
+    } catch (_) { return ok("fail"); }
+  }
+
   // 诊断 + 签名调试
   if (url.searchParams.get("diag") === "1") {
     try {
@@ -172,7 +187,14 @@ serve(async (req: Request) => {
   }
 
   try {
-    const email = params["param"] || params["attach"] || "";
+    let email = params["param"] || params["attach"] || "";
+    // ezfpy 不返回 param 字段，从订单映射表查找
+    const outTradeNo = params["out_trade_no"] || "";
+    if (!email && outTradeNo) {
+      const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+      const { data: rows } = await supabase.from("settings").select("config").eq("email", "pay:" + outTradeNo).limit(1);
+      if (rows && rows.length > 0) email = rows[0].config.email;
+    }
     if (!email) return ok("fail");
 
     const days = parseDays(params["name"] || params["subject"] || "30天");
