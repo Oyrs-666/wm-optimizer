@@ -8,8 +8,12 @@ const SUPABASE_URL = "https://migbxhwvgcddtlhmqtry.supabase.co";
 const SUPABASE_KEY = "填你的service_role_key";
 
 function parseDays(name: string): number {
-  const m = name.match(/\((\d+)天\)/);
-  return m ? parseInt(m[1]) : 30;
+  // 新格式: VIP{天数}|{邮箱}
+  const m = name.match(/VIP(\d+)\|/);
+  if (m) return parseInt(m[1]);
+  // 旧格式兼容: WM优化助手VIP-day(1天)
+  const old = name.match(/\((\d+)天\)/);
+  return old ? parseInt(old[1]) : 30;
 }
 
 // 纯JS MD5（Deno兼容，正确处理UTF-8中文）
@@ -77,20 +81,6 @@ serve(async (req: Request) => {
         else { body.split("&").forEach(p => { const [k, v] = p.split("="); if (k) params[decodeURIComponent(k)] = decodeURIComponent(v || ""); }); }
       }
     } catch (_) {}
-  }
-
-  // 付款前存储订单→邮箱映射
-  if (url.searchParams.get("store") === "1") {
-    const body = await req.json();
-    const orderNo = body.orderNo, email = body.email;
-    if (!orderNo || !email) return ok("fail:missing_params");
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-    const { error } = await supabase.from("settings").insert({
-      email: "pay:" + orderNo,
-      config: { email, createdAt: new Date().toISOString() }
-    });
-    if (error) return ok("fail:" + error.message);
-    return ok("ok");
   }
 
   // 诊断 + 签名调试
@@ -187,16 +177,16 @@ serve(async (req: Request) => {
 
   try {
     let email = params["param"] || params["attach"] || "";
-    // ezfpy 不返回 param 字段，从订单映射表查找
-    const outTradeNo = params["out_trade_no"] || "";
-    if (!email && outTradeNo) {
-      const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-      const { data: rows } = await supabase.from("settings").select("config").eq("email", "pay:" + outTradeNo).limit(1);
-      if (rows && rows.length > 0) email = rows[0].config.email;
+    // ezfpy 不返回 param，从商品名提取邮箱（格式: VIPday|email）
+    const name = params["name"] || "";
+    if (!email && name.includes("|")) {
+      const parts = name.split("|");
+      email = parts[1] || "";
     }
     if (!email) return ok("fail");
 
-    const days = parseDays(params["name"] || params["subject"] || "30天");
+    const outTradeNo = params["out_trade_no"] || "";
+    const days = parseDays(name);
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
     // 防重：检查此订单是否已处理
     if (outTradeNo) {
