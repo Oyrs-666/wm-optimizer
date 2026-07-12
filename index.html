@@ -492,6 +492,47 @@ for(var i=0;i<50;i++)particles.push({x:Math.random()*cv.width,y:Math.random()*cv
 })();
 })();
 </script>
-<!-- 支付成功自动开通 --><div id="paySuccOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);align-items:center;justify-content:center"><div style="background:rgba(20,25,35,.95);border:1px solid rgba(100,200,140,.3);border-radius:20px;padding:40px;text-align:center;max-width:420px"><div style="font-size:48px;margin-bottom:16px">✅</div><h2 style="color:#e0e0f0;font-size:22px;margin-bottom:8px" id="paySuccTitle">支付成功！</h2><p style="color:#a0a0c0;font-size:14px;margin-bottom:20px" id="paySuccMsg">正在自动开通 VIP...</p><div id="paySuccSpinner" style="width:40px;height:40px;border:3px solid rgba(100,200,140,.2);border-top-color:#5ac85a;border-radius:50%;margin:0 auto;animation:spin .8s linear infinite"></div></div></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style><script>(function(){var q=new URLSearchParams(location.search);var tradeStatus=q.get("trade_status");if(tradeStatus==="TRADE_SUCCESS"){var overlay=document.getElementById("paySuccOverlay");overlay.style.display="flex";var params={};q.forEach(function(v,k){params[k]=v;});var keys=Object.keys(params).filter(function(k){return k!=="sign"</body></body>k!=="sign_type";}).sort();var qs=keys.map(function(k){return encodeURIComponent(k)+"="+encodeURIComponent(params[k]);}).join("</body>");if(params.sign)qs+="</body>sign="+encodeURIComponent(params.sign);if(params.sign_type)qs+="</body>sign_type="+encodeURIComponent(params.sign_type);fetch("https://migbxhwvgcddtlhmqtry.supabase.co/functions/v1/quick-processor?"+qs).then(function(r){return r.text();}).then(function(result){document.getElementById("paySuccMsg").textContent=result==="success"?"VIP 已自动开通！请返回软件查看":"VIP 开通中，请返回软件点击 我已完成付款";document.getElementById("paySuccSpinner").style.display="none";setTimeout(function(){overlay.style.display="none";},5000);}).catch(function(){document.getElementById("paySuccMsg").textContent="开通遇到问题，请返回软件手动开通";document.getElementById("paySuccSpinner").style.display="none";});}})();</script>
+<!-- 支付成功自动开通 -->
+<div id="paySuccOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);align-items:center;justify-content:center">
+  <div style="background:rgba(20,25,35,.95);border:1px solid rgba(100,200,140,.3);border-radius:20px;padding:40px;text-align:center;max-width:420px">
+    <div style="font-size:48px;margin-bottom:16px">&#x2705;</div>
+    <h2 style="color:#e0e0f0;font-size:22px;margin-bottom:8px" id="paySuccTitle">支付成功！</h2>
+    <p style="color:#a0a0c0;font-size:14px;margin-bottom:20px" id="paySuccMsg">正在自动开通 VIP...</p>
+    <div id="paySuccSpinner" style="width:40px;height:40px;border:3px solid rgba(100,200,140,.2);border-top-color:#5ac85a;border-radius:50%;margin:0 auto;animation:spin .8s linear infinite"></div>
+  </div>
+</div>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var tradeStatus = q.get('trade_status');
+  if (tradeStatus === 'TRADE_SUCCESS') {
+    var overlay = document.getElementById('paySuccOverlay');
+    overlay.style.display = 'flex';
+    var params = {};
+    q.forEach(function(v, k) { params[k] = v; });
+    var keys = Object.keys(params).filter(function(k) {
+      return k !== 'sign' && k !== 'sign_type';
+    }).sort();
+    var qs = keys.map(function(k) {
+      return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+    }).join('&');
+    if (params.sign) qs += '&sign=' + encodeURIComponent(params.sign);
+    if (params.sign_type) qs += '&sign_type=' + encodeURIComponent(params.sign_type);
+    var url = 'https://migbxhwvgcddtlhmqtry.supabase.co/functions/v1/quick-processor?' + qs;
+    fetch(url).then(function(r) { return r.text(); }).then(function(result) {
+      if (result === 'success') {
+        document.getElementById('paySuccMsg').textContent = 'VIP 已自动开通！请返回软件查看';
+      } else {
+        document.getElementById('paySuccMsg').textContent = 'VIP 开通中，请返回软件点击 我已完成付款';
+      }
+      document.getElementById('paySuccSpinner').style.display = 'none';
+      setTimeout(function() { overlay.style.display = 'none'; }, 5000);
+    }).catch(function() {
+      document.getElementById('paySuccMsg').textContent = '网络错误，请返回软件手动开通';
+      document.getElementById('paySuccSpinner').style.display = 'none';
+    });
+  }
+})();
+</script>
 </body>
-</html>
