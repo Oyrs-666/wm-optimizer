@@ -12,10 +12,9 @@ function parseDays(name: string): number {
   return m ? parseInt(m[1]) : 30;
 }
 
-// 纯JS MD5（Deno兼容，使用Uint32Array处理无符号整数）
+// 纯JS MD5（Deno兼容，正确处理UTF-8中文）
 function md5(str: string): string {
-  const bytes = new Uint8Array(str.length);
-  for (let i = 0; i < str.length; i++) bytes[i] = str.charCodeAt(i) & 0xFF;
+  const bytes = new TextEncoder().encode(str);
   const bl = bytes.length * 8;
   const padded = new Uint8Array(Math.ceil((bytes.length + 9) / 64) * 64);
   padded.set(bytes); padded[bytes.length] = 0x80;
