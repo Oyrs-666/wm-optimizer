@@ -200,7 +200,6 @@ serve(async (req: Request) => {
     const days = parseDays(params["name"] || params["subject"] || "30天");
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
     // 防重：检查此订单是否已处理
-    const outTradeNo = params["out_trade_no"] || "";
     if (outTradeNo) {
       const { data: dup } = await supabase.from("settings").select("config").eq("email", "order:" + outTradeNo).limit(1);
       if (dup && dup.length > 0) return ok("success"); // 已处理，返回 success 避免重复通知
