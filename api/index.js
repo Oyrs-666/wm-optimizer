@@ -234,14 +234,6 @@ module.exports = async function(req, res) {
     // === 版本检查 ===
     if (p === '/api/version') return res.status(200).json({ version: '2.0.1' });
 
-    // === 官网 ===
-    if (p === '/' || p === '' || p === '/index.html') {
-      var fs = require('fs'), pt = require('path');
-      var html = fs.readFileSync(pt.join(__dirname, '..', 'landing.html'), 'utf-8');
-      res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      return res.status(200).send(html);
-    }
-
     return res.status(404).json({ error: 'Not Found' });
   } catch(e) {
     return res.status(500).json({ error: e.message });
