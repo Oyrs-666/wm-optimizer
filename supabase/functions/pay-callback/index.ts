@@ -79,19 +79,18 @@ serve(async (req: Request) => {
     } catch (_) {}
   }
 
-  // 付款前存储订单→邮箱映射（解决 ezfpy 不返回 param 字段的问题）
+  // 付款前存储订单→邮箱映射
   if (url.searchParams.get("store") === "1") {
-    try {
-      const body = await req.json();
-      const orderNo = body.orderNo, email = body.email;
-      if (!orderNo || !email) return ok("fail");
-      const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-      await supabase.from("settings").insert({
-        email: "pay:" + orderNo,
-        config: { email, createdAt: new Date().toISOString() }
-      });
-      return ok("ok");
-    } catch (_) { return ok("fail"); }
+    const body = await req.json();
+    const orderNo = body.orderNo, email = body.email;
+    if (!orderNo || !email) return ok("fail:missing_params");
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const { error } = await supabase.from("settings").insert({
+      email: "pay:" + orderNo,
+      config: { email, createdAt: new Date().toISOString() }
+    });
+    if (error) return ok("fail:" + error.message);
+    return ok("ok");
   }
 
   // 诊断 + 签名调试
