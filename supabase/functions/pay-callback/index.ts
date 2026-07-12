@@ -42,20 +42,30 @@ serve(async (req: Request) => {
     }
   }
 
-  // App MAPI 兜底激活
+  // App 手动激活（带防重校验）
   if (url.searchParams.get("activate") === "1") {
     try {
       const body = await req.json();
-      const email = body.email, days = body.days || 30;
+      const email = body.email, days = body.days || 30, orderNo = body.orderNo || "";
       if (!email) return new Response("fail");
+      // 校验订单号：必须以 WM 开头，且时间戳在24小时内
+      if (!orderNo.startsWith("WM")) return new Response("fail");
+      const ts = parseInt(orderNo.substring(2)) || 0;
+      if (Date.now() - ts > 86400000) return new Response("fail"); // 超过24小时
       const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+      // 检查是否已使用过此订单号
+      const { data: existing } = await supabase.from("settings").select("config").eq("email", "order:" + orderNo).limit(1);
+      if (existing && existing.length > 0) return new Response("fail"); // 已使用
+      // 查找用户
       const { data: users } = await supabase.from("users").select("vip_expiry").eq("email", email).limit(1);
       if (!users || users.length === 0) return new Response("fail");
       const now = new Date();
       let expiry = users[0].vip_expiry ? new Date(users[0].vip_expiry) : now;
       if (isNaN(expiry.getTime()) || expiry < now) expiry = now;
       expiry.setDate(expiry.getDate() + days);
+      // 激活 VIP + 记录订单号防重
       await supabase.from("users").update({ vip_expiry: expiry.toISOString() }).eq("email", email);
+      await supabase.from("settings").insert({ email: "order:" + orderNo, config: { usedBy: email, usedAt: now.toISOString() } });
       return new Response("success");
     } catch (_) { return new Response("fail"); }
   }
