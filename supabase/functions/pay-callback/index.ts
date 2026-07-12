@@ -56,7 +56,15 @@ serve(async (req: Request) => {
     }});
   }
   const corsHeaders = { "Access-Control-Allow-Origin": "*" };
-  const ok = (body: string, status = 200, extra = {}) => new Response(body, { status, headers: { ...corsHeaders, ...extra } });
+  const ok = (body: string, opts?: number | Record<string, unknown>, extra?: Record<string, unknown>) => {
+    let status = 200, headers: Record<string, string> = { ...corsHeaders };
+    if (typeof opts === "number") { status = opts; if (extra) Object.assign(headers, extra); }
+    else if (opts && typeof opts === "object") {
+      if (typeof opts.status === "number") status = opts.status;
+      if (opts.headers) Object.assign(headers, opts.headers);
+    }
+    return new Response(body, { status, headers });
+  };
 
   const url = new URL(req.url);
   const params: Record<string, string> = {};
@@ -72,14 +80,18 @@ serve(async (req: Request) => {
     } catch (_) {}
   }
 
-  // 诊断
+  // 诊断 + 签名调试
   if (url.searchParams.get("diag") === "1") {
     try {
       const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
       const { data, error } = await supabase.from("users").select("email").limit(1);
-      return ok(JSON.stringify({ ok: !error, dbConnected: !!data }), {
-        status: 200, headers: { "Content-Type": "application/json" }
-      });
+      const signKeys = Object.keys(params).filter(k => k !== "sign" && k !== "sign_type").sort();
+      const signStr = signKeys.map(k => k + "=" + params[k]).join("&");
+      const expected = md5(signStr + "bhn8q3o0r7Z3OMWyRNs12OpZrx9Zj8vH");
+      return ok(JSON.stringify({
+        ok: !error, dbConnected: !!data,
+        debug: { receivedParams: params, signStr, expectedSign: expected, receivedSign: params.sign || "none" }
+      }), { status: 200, headers: { "Content-Type": "application/json" } });
     } catch (e) {
       return ok(JSON.stringify({ ok: false, error: String(e) }), {
         status: 200, headers: { "Content-Type": "application/json" }
