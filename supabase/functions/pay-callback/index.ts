@@ -177,17 +177,11 @@ serve(async (req: Request) => {
   }
 
   try {
-    let email = params["param"] || params["attach"] || "";
-    // ezfpy 不返回 param，从商品名提取邮箱（格式: VIPday|email）
-    const name = params["name"] || "";
-    if (!email && name.includes("|")) {
-      const parts = name.split("|");
-      email = parts[1] || "";
-    }
+    const email = params["param"] || params["attach"] || "";
     if (!email) return ok("fail");
 
     const outTradeNo = params["out_trade_no"] || "";
-    const days = parseDays(name);
+    const days = parseDays(params["name"] || "");
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
     // 防重：检查此订单是否已处理
     if (outTradeNo) {

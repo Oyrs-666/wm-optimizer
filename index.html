@@ -506,11 +506,16 @@ for(var i=0;i<50;i++)particles.push({x:Math.random()*cv.width,y:Math.random()*cv
 (function(){
   var q = new URLSearchParams(location.search);
   var tradeStatus = q.get('trade_status');
+  var email = q.get('e') || '';
   if (tradeStatus === 'TRADE_SUCCESS') {
     var overlay = document.getElementById('paySuccOverlay');
     overlay.style.display = 'flex';
     var params = {};
-    q.forEach(function(v, k) { params[k] = v; });
+    q.forEach(function(v, k) {
+      if (k !== 'e') params[k] = v;  // 排除自定义邮箱参数，不影响验签
+    });
+    // 把邮箱作为 param 加入（ezfpy 不返回，我们补上）
+    if (email) params['param'] = email;
     var keys = Object.keys(params).filter(function(k) {
       return k !== 'sign' && k !== 'sign_type';
     }).sort();
@@ -524,7 +529,7 @@ for(var i=0;i<50;i++)particles.push({x:Math.random()*cv.width,y:Math.random()*cv
       if (result === 'success') {
         document.getElementById('paySuccMsg').textContent = 'VIP 已自动开通！请返回软件查看';
       } else {
-        document.getElementById('paySuccMsg').textContent = 'VIP 开通中，请返回软件点击 我已完成付款';
+        document.getElementById('paySuccMsg').textContent = '开通失败，请返回软件手动开通';
       }
       document.getElementById('paySuccSpinner').style.display = 'none';
       setTimeout(function() { overlay.style.display = 'none'; }, 5000);
