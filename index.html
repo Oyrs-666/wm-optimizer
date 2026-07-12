@@ -3,175 +3,493 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WM优化助手 - 专业Windows性能调优工具</title>
+<meta name="description" content="WM优化助手 - 专业Windows性能调优工具，CPU核心调度、进程优化、内存清理、显卡驱动管理、ICC色彩滤镜，专为电竞玩家打造">
+<title>WM优化助手 - 专业Windows性能调优工具 | 浩博电竞优化团队</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a14;color:#c0c0d0;font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;overflow-x:hidden}
+html{scroll-behavior:smooth}
+body{background:#08080f;color:#c0c0d8;font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei","PingFang SC",sans-serif;overflow-x:hidden;line-height:1.6}
+::selection{background:rgba(100,160,220,.3);color:#fff}
+
 /* 粒子背景 */
-#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7}
+
+/* 容器 */
+.container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 24px}
+.section-padding{padding:100px 0}
 
 /* 导航 */
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,20,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.05)}
-.nav-logo{font-size:20px;font-weight:700;color:#e0e0f0;letter-spacing:1px}
-.nav-links{display:flex;gap:24px;list-style:none}
-.nav-links a{color:#888;text-decoration:none;font-size:14px;transition:color .2s}
-.nav-links a:hover{color:#c0c0e0}
-.nav-btn{padding:8px 20px;border-radius:8px;background:linear-gradient(135deg,#4a8aba,#6a6aca);color:#fff;font-size:14px;font-weight:600;text-decoration:none;transition:all .3s}
-.nav-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(74,138,186,.4)}
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(8,8,15,.92);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(255,255,255,.06);transition:all .3s}
+.nav-inner{max-width:1200px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;color:#e8e8f8;letter-spacing:.5px;text-decoration:none}
+.nav-logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#4a8aca,#7a6ad8);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff}
+.nav-links{display:flex;align-items:center;gap:32px;list-style:none}
+.nav-links a{color:#9090a8;text-decoration:none;font-size:14px;font-weight:500;transition:color .2s;position:relative}
+.nav-links a:hover{color:#d0d0f0}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:linear-gradient(90deg,#5a9ad8,#7a6ad8);transition:width .3s;border-radius:2px}
+.nav-links a:hover::after{width:100%}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:10px;background:linear-gradient(135deg,#4a8aca,#6a5ad0);color:#fff!important;font-size:14px;font-weight:700;text-decoration:none;transition:all .3s;box-shadow:0 2px 12px rgba(74,138,202,.3)}
+.nav-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(74,138,202,.45)}.nav-btn::after{display:none}
 
 /* Hero */
-.hero{position:relative;z-index:1;text-align:center;padding:140px 20px 80px}
-.hero h1{font-size:52px;font-weight:800;background:linear-gradient(135deg,#80c8f0,#c0e0ff,#a0c8f0,#d0b0f0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px;letter-spacing:2px}
-.hero p{font-size:18px;color:#7a7a90;max-width:600px;margin:0 auto 32px;line-height:1.6}
-.hero-tag{display:inline-block;padding:6px 16px;border-radius:20px;border:1px solid rgba(100,180,240,.2);font-size:13px;color:#6a9aba;margin-bottom:24px}
-.hero-ad{font-size:20px;font-weight:600;color:rgba(180,200,230,.8);margin-top:16px;letter-spacing:2px}
-.hero-ad span{color:#8ab8d8}
+.hero{position:relative;z-index:1;text-align:center;padding:160px 24px 100px}
+.hero-badge{display:inline-block;padding:6px 16px;border-radius:20px;border:1px solid rgba(100,180,240,.25);font-size:13px;color:#80b8e0;margin-bottom:28px;background:rgba(100,160,220,.06);letter-spacing:1px}
+.hero h1{font-size:clamp(36px,6vw,60px);font-weight:900;background:linear-gradient(135deg,#78c0f0,#b0d8ff,#90c0f0,#c8b0f8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px;letter-spacing:1px;line-height:1.2}
+.hero-subtitle{font-size:18px;color:#808098;max-width:640px;margin:0 auto 36px;line-height:1.7}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.hero-btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 36px;border-radius:12px;background:linear-gradient(135deg,#4a8aca,#6a5ad0);color:#fff;font-size:16px;font-weight:700;text-decoration:none;transition:all .3s;box-shadow:0 4px 20px rgba(74,138,202,.35)}
+.hero-btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(74,138,202,.5)}
+.hero-btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:14px 36px;border-radius:12px;border:1.5px solid rgba(255,255,255,.15);color:#c0c0e0;font-size:16px;font-weight:600;text-decoration:none;transition:all .3s}
+.hero-btn-secondary:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.04)}
+.hero-motto{margin-top:40px;font-size:18px;font-weight:600;color:rgba(160,190,220,.7);letter-spacing:3px}
+.hero-motto span{color:#80b0d8}
 
-/* 功能 */
-.features{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:40px 20px}
-.features h2{text-align:center;font-size:32px;font-weight:700;color:#e0e0f0;margin-bottom:40px}
-.feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
-.feature-card{padding:28px;border-radius:16px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);transition:all .35s}
-.feature-card:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);transform:translateY(-2px)}
-.feature-icon{font-size:28px;margin-bottom:12px}
-.feature-card h3{font-size:17px;font-weight:650;color:#d0d0e0;margin-bottom:8px}
-.feature-card p{font-size:13px;color:#888;line-height:1.55}
+/* 数据条 */
+.stats{position:relative;z-index:1;padding:0 24px 60px}
+.stats-grid{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.stat-item{text-align:center;padding:24px 16px;border-right:1px solid rgba(255,255,255,.05)}
+.stat-item:last-child{border-right:none}
+.stat-num{font-size:32px;font-weight:800;color:#d0d8f0;margin-bottom:4px}
+.stat-label{font-size:13px;color:#707088;text-transform:uppercase;letter-spacing:1px}
+
+/* 标题 */
+.section-title{text-align:center;margin-bottom:56px}
+.section-title h2{font-size:32px;font-weight:800;color:#e8e8f8;margin-bottom:12px;letter-spacing:.5px}
+.section-title p{font-size:15px;color:#787898;max-width:500px;margin:0 auto}
+.section-divider{width:60px;height:4px;background:linear-gradient(90deg,#4a8aca,#7a6ad8);margin:16px auto 0;border-radius:2px}
+
+/* 功能卡片 */
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.feature-card{position:relative;padding:32px 24px;border-radius:16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);transition:all .35s;overflow:hidden}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);opacity:0;transition:opacity .35s}
+.feature-card:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.feature-card:hover::before{opacity:1}
+.feature-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px;background:rgba(100,160,220,.1);border:1px solid rgba(100,160,220,.15)}
+.feature-card h3{font-size:17px;font-weight:700;color:#d8d8f0;margin-bottom:8px}
+.feature-card p{font-size:13px;color:#8888a0;line-height:1.6}
+
+/* VIP 价格 */
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;max-width:1000px;margin:0 auto}
+.pricing-card{position:relative;padding:28px 20px;border-radius:16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);text-align:center;transition:all .35s}
+.pricing-card:hover{border-color:rgba(100,160,220,.3);background:rgba(255,255,255,.04);transform:translateY(-2px)}
+.pricing-card.popular{border-color:rgba(100,160,220,.4);background:rgba(74,138,202,.08);box-shadow:0 0 40px rgba(74,138,202,.08)}
+.pricing-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);padding:3px 14px;border-radius:12px;background:linear-gradient(135deg,#e08040,#d06030);color:#fff;font-size:11px;font-weight:700;white-space:nowrap}
+.pricing-name{font-size:14px;font-weight:600;color:#a0a0c0;margin-bottom:8px}
+.pricing-price{font-size:36px;font-weight:900;color:#e0e0f8;margin-bottom:4px}
+.pricing-price span{font-size:16px;font-weight:500;color:#888}
+.pricing-desc{font-size:12px;color:#707088;margin-top:8px}
+
+/* 优势 */
+.advantages{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px}
+.adv-card{display:flex;gap:16px;padding:24px;border-radius:14px;background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.04);transition:all .3s}
+.adv-card:hover{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08)}
+.adv-icon{flex-shrink:0;width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(100,200,140,.1);border:1px solid rgba(100,200,140,.15)}
+.adv-content h4{font-size:15px;font-weight:700;color:#d0d0e8;margin-bottom:4px}
+.adv-content p{font-size:13px;color:#808098;line-height:1.5}
+
+/* 联系客服 */
+.contact-section{text-align:center}
+.contact-card{display:inline-block;padding:40px 60px;border-radius:20px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)}
+.contact-card h3{font-size:22px;font-weight:700;color:#e0e0f0;margin-bottom:16px}
+.contact-wechat{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:12px;background:rgba(7,193,96,.1);border:1px solid rgba(7,193,96,.2);color:#3cc96e;font-size:18px;font-weight:700;margin-bottom:8px;letter-spacing:1px}
+.contact-wechat-icon{font-size:22px}
+.contact-note{font-size:13px;color:#787898;margin-top:8px}
+
+/* 团队 */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;max-width:800px;margin:0 auto}
+.team-card{padding:32px 20px;border-radius:16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);text-align:center;transition:all .3s}
+.team-card:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1);transform:translateY(-2px)}
+.team-avatar{width:64px;height:64px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff}
+.team-avatar.av1{background:linear-gradient(135deg,#4a8aca,#6a5ad0)}
+.team-avatar.av2{background:linear-gradient(135deg,#ca6a4a,#d08a30)}
+.team-name{font-size:16px;font-weight:700;color:#d8d8f0;margin-bottom:4px}
+.team-role{font-size:13px;color:#8088a0;margin-bottom:8px}
+.team-desc{font-size:12px;color:#686888;line-height:1.5}
 
 /* 更新日志 */
-.changelog{position:relative;z-index:1;max-width:700px;margin:60px auto;padding:20px}
-.changelog h2{text-align:center;font-size:28px;font-weight:700;color:#e0e0f0;margin-bottom:32px}
-.cl-item{padding:16px 0;border-bottom:1px solid rgba(255,255,255,.04)}
-.cl-version{font-size:15px;font-weight:650;color:#8ab8d8}
-.cl-date{font-size:12px;color:#666;margin-left:12px}
-.cl-changes{margin-top:6px;font-size:13px;color:#888;line-height:1.6}
-.cl-changes li{margin:3px 0;list-style:none}
-.cl-changes li::before{content:'+ ';color:#5a9a7a}
+.changelog{max-width:700px;margin:0 auto}
+.cl-item{padding:20px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.cl-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.cl-version{font-size:15px;font-weight:700;color:#80b0d8;padding:3px 10px;border-radius:6px;background:rgba(100,160,220,.08)}
+.cl-date{font-size:12px;color:#606078}
+.cl-changes{font-size:13px;color:#8888a0;line-height:1.8}
+.cl-changes li{list-style:none;padding:2px 0}
+.cl-changes li::before{content:'+ ';color:#5a9a7a;font-weight:700}
 
-/* 底部 */
-.footer{text-align:center;padding:40px;font-size:13px;color:#555;border-top:1px solid rgba(255,255,255,.04)}
+/* 下载 */
+.download-section{text-align:center}
+.download-card{display:inline-block;padding:48px 64px;border-radius:24px;background:linear-gradient(135deg,rgba(74,138,202,.08),rgba(106,90,208,.08));border:1px solid rgba(100,160,220,.15)}
+.download-card h2{font-size:28px;font-weight:800;color:#e8e8f8;margin-bottom:8px}
+.download-card .ver{font-size:14px;color:#80b0d8;margin-bottom:20px}
+.download-card .btn-dl{display:inline-flex;align-items:center;gap:8px;padding:16px 48px;border-radius:14px;background:linear-gradient(135deg,#4a8aca,#6a5ad0);color:#fff;font-size:18px;font-weight:700;text-decoration:none;transition:all .3s;box-shadow:0 6px 28px rgba(74,138,202,.4)}
+.download-card .btn-dl:hover{transform:translateY(-2px);box-shadow:0 10px 40px rgba(74,138,202,.55)}
+.download-card .dl-info{font-size:12px;color:#686888;margin-top:14px}
+
+/* Footer */
+.footer{text-align:center;padding:48px 24px;border-top:1px solid rgba(255,255,255,.04);color:#585878;font-size:13px}
+.footer strong{color:#8888a8}
 
 /* 响应式 */
 @media(max-width:768px){
-  .hero h1{font-size:32px}
   .nav-links{display:none}
+  .hero{padding:120px 16px 60px}
+  .hero h1{font-size:32px}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .stat-item{border-right:none;border-bottom:1px solid rgba(255,255,255,.05);padding:16px}
+  .stat-item:nth-child(3),.stat-item:nth-child(4){border-bottom:none}
+  .feature-grid{grid-template-columns:1fr}
+  .pricing-grid{grid-template-columns:repeat(2,1fr)}
+  .advantages{grid-template-columns:1fr}
+  .team-grid{grid-template-columns:1fr}
+  .download-card{padding:32px 24px}
+  .contact-card{padding:28px 24px}
+  .section-padding{padding:60px 0}
 }
 </style>
 </head>
 <body>
 <canvas id="bg-canvas"></canvas>
 
+<!-- 导航 -->
 <nav class="nav">
-  <div class="nav-logo">WM 优化助手</div>
-  <ul class="nav-links">
-    <li><a href="#features">功能</a></li>
-    <li><a href="#changelog">更新日志</a></li>
-    <li><a href="#download">下载</a></li>
-  </ul>
-  <a href="https://cdn.jsdelivr.net/gh/Oyrs-666/wm-optimizer@master/WM优化助手-Setup-v2.0.1.exe" class="nav-btn">立即下载</a>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">W</div>
+      WM优化助手
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">核心功能</a></li>
+      <li><a href="#vip">VIP会员</a></li>
+      <li><a href="#changelog">更新日志</a></li>
+      <li><a href="#contact">联系我们</a></li>
+    </ul>
+    <a href="https://cdn.jsdelivr.net/gh/Oyrs-666/wm-optimizer@master/WM优化助手-Setup-v2.0.1.exe" class="nav-btn">&#x2B07; 立即下载</a>
+  </div>
 </nav>
 
+<!-- Hero -->
 <section class="hero">
-  <div class="hero-tag">v2.0.1 · Windows 10/11</div>
+  <div class="hero-badge">v2.0.1 · 支持 Windows 10 / 11 x64</div>
   <h1>WM 优化助手</h1>
-  <p>一站式 Windows 性能调优工具。CPU 核心调度、进程优化、内存清理、显卡驱动管理、ICC 色彩滤镜——专为电竞玩家打造</p>
-  <div class="hero-ad">用心调试专业优化 · 以性能表达用数据说话<br><span>—— 浩博电竞优化团队</span></div>
+  <p class="hero-subtitle">专为电竞玩家打造的一站式 Windows 性能调优工具<br>CPU 核心调度 · 进程优化 · 内存清理 · 显卡驱动 · ICC 滤镜 · 电源管理</p>
+  <div class="hero-btns">
+    <a href="https://cdn.jsdelivr.net/gh/Oyrs-666/wm-optimizer@master/WM优化助手-Setup-v2.0.1.exe" class="hero-btn-primary">&#x2B07; 免费下载</a>
+    <a href="#features" class="hero-btn-secondary">了解更多 &#x2192;</a>
+  </div>
+  <div class="hero-motto">用心调试专业优化 · 以性能表达用数据说话<br><span>—— 浩博电竞优化团队</span></div>
 </section>
 
-<section class="features" id="features">
-  <h2>核心功能</h2>
-  <div class="feature-grid">
-    <div class="feature-card">
-      <div class="feature-icon">&#x2699;</div>
-      <h3>核心调度</h3>
-      <p>自定义 CPU 亲和性，为游戏进程分配专属核心。保存预设，开机自动应用</p>
+<!-- 数据 -->
+<section class="stats">
+  <div class="stats-grid">
+    <div class="stat-item"><div class="stat-num">10+</div><div class="stat-label">优化模块</div></div>
+    <div class="stat-item"><div class="stat-num">50+</div><div class="stat-label">可调参数</div></div>
+    <div class="stat-item"><div class="stat-num">99%</div><div class="stat-label">一键还原</div></div>
+    <div class="stat-item"><div class="stat-num">永久</div><div class="stat-label">免费使用</div></div>
+  </div>
+</section>
+
+<!-- 核心功能 -->
+<section class="section-padding" id="features">
+  <div class="container">
+    <div class="section-title">
+      <h2>核心功能</h2>
+      <p>覆盖系统优化的方方面面，从 CPU 到显卡，从内存到电源，一站式调校</p>
+      <div class="section-divider"></div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">&#x2B21;</div>
-      <h3>进程优化</h3>
-      <p>对标 Process Lasso。CPU/内存/IO 优先级调整，一键终止，预设管理</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">&#x25C8;</div>
-      <h3>内存清理</h3>
-      <p>Mem Reduct 级深度清理。Standby List 清空、间隔自动清理、阈值触发</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">&#x25A3;</div>
-      <h3>显卡驱动</h3>
-      <p>自动检测显卡型号，推荐最稳定驱动版本。一键跳转官网下载</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">&#x25C6;</div>
-      <h3>显卡优化</h3>
-      <p>内置 nvidiaProfileInspector，一键导入 .nip 优化预设</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">&#x2600;</div>
-      <h3>ICC 色彩滤镜</h3>
-      <p>Gamma 校正、色温调节、RGB 通道增益、暗部平衡。预设一键切换</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">&#x26A1;</div>
-      <h3>电源计划</h3>
-      <p>一键导入高性能电源方案。DUN、Intel、X3D 多平台预设</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">&#x1F6E0;</div>
-      <h3>系统优化</h3>
-      <p>禁用隐私服务、关闭安全中心、管理开机启动项。一键应用</p>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">&#x2699;</div>
+        <h3>CPU 核心调度</h3>
+        <p>为游戏进程绑定专属 CPU 核心，避免线程争抢。支持预设方案保存，开机自动应用，确保每次游戏都在最优核心上运行</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x2B21;</div>
+        <h3>进程优化管理</h3>
+        <p>对标 Process Lasso 的专业级进程管理。实时监控 CPU/内存/IO 占用，调整进程优先级，一键终止无用后台进程</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x25C8;</div>
+        <h3>内存深度清理</h3>
+        <p>Mem Reduct 级别的 Standby List 清空，智能回收闲置内存。支持间隔自动清理、阈值触发清理，为游戏腾出更多可用内存</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x25A3;</div>
+        <h3>显卡驱动管理</h3>
+        <p>自动检测 NVIDIA / AMD / Intel 显卡型号，智能推荐最稳定的 Game Ready 驱动版本，一键跳转官方下载</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x25C6;</div>
+        <h3>显卡参数优化</h3>
+        <p>内置 nvidiaProfileInspector，支持一键导入 .nip 优化预设。精细调校显卡参数，榨干每一点性能潜力</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x2600;</div>
+        <h3>ICC 色彩滤镜</h3>
+        <p>Gamma 校正 + 色温调节 + RGB 通道增益 + 暗部平衡 + ICC 配置文件导入。多种预设一键切换，游戏画面更清晰</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x26A1;</div>
+        <h3>电源计划管理</h3>
+        <p>一键导入 DUN / Intel / X3D 多平台高性能电源方案，释放 CPU 完整性能。支持自定义电源计划并导出</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F6E0;</div>
+        <h3>系统深度优化</h3>
+        <p>禁用遥测服务、Windows Defender、搜索索引等无用后台服务。管理开机启动项，关闭隐私设置，释放系统资源</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F3AE;</div>
+        <h3>游戏场景预加载</h3>
+        <p>提前加载游戏场景资源到内存，减少切换卡顿与加载时间。支持明日之后等游戏的专属优化方案</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4CA;</div>
+        <h3>实时硬件监控</h3>
+        <p>CPU / 内存 / GPU / 磁盘环形仪表盘，实时掌握硬件状态。温度、占用率、频率一目了然</p>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="changelog" id="changelog">
-  <h2>更新日志</h2>
-  	  <div class="cl-item">
-	    <span class="cl-version">v2.0.1</span><span class="cl-date">2026-07-12</span>
-	    <ul class="cl-changes">
-	      <li>VIP 会员系统 + 付费卡片 + 扫码开通</li>
-	      <li>游戏路径记忆功能，无需重复设置</li>
-	      <li>全新自动更新机制，引导至官网下载</li>
-	      <li>安装包增加免责声明页面</li>
-	      <li>修复非VIP用户无法看到付费卡片的问题</li>
-	      <li>修复设置页VIP状态显示错误</li>
-	      <li>移除内置后台管理（已有独立程序）</li>
-	    </ul>
-	  </div>
-	  <div class="cl-item">
-	    <span class="cl-version">v1.0.0</span><span class="cl-date">2026-06-20</span>
-	    <ul class="cl-changes">
-	      <li>首个正式版本发布</li>
-	      <li>核心调度 + CPU 亲和性管理、进程优化、内存深度清理</li>
-	      <li>显卡驱动检测 + 推荐 + 下载、nvidiaProfileInspector 导入</li>
-	      <li>ICC 色彩滤镜、电源计划一键导入、系统优化</li>
-	    </ul>
-	  </div>
+<!-- 为什么选择我们 -->
+<section class="section-padding" style="background:rgba(255,255,255,.01)">
+  <div class="container">
+    <div class="section-title">
+      <h2>为什么选择 WM 优化助手</h2>
+      <p>专业、安全、免费，专为电竞玩家打造的系统优化方案</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="advantages">
+      <div class="adv-card">
+        <div class="adv-icon">&#x2714;</div>
+        <div class="adv-content">
+          <h4>安全合规</h4>
+          <p>所有操作均为 Windows 公开合法的系统参数调节。不读取游戏内存、不注入进程、不修改游戏数据，严格遵守网络安全法规</p>
+        </div>
+      </div>
+      <div class="adv-card">
+        <div class="adv-icon">&#x21BA;</div>
+        <div class="adv-content">
+          <h4>一键还原</h4>
+          <p>所有优化均支持自动备份与一键还原。不满意任何设置？随时恢复到优化前的状态，零风险使用</p>
+        </div>
+      </div>
+      <div class="adv-card">
+        <div class="adv-icon">&#x26A1;</div>
+        <div class="adv-content">
+          <h4>性能显著提升</h4>
+          <p>多项优化同时生效：CPU 核心绑定减少线程切换、内存清理释放闲置空间、电源方案解锁完整性能</p>
+        </div>
+      </div>
+      <div class="adv-card">
+        <div class="adv-icon">&#x1F4E6;</div>
+        <div class="adv-content">
+          <h4>持续更新</h4>
+          <p>内置自动更新检测，第一时间获取最新功能和优化方案。版本更新日志透明公开</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section id="download" style="text-align:center;padding:40px 20px 80px">
-  <h2 style="font-size:28px;font-weight:700;color:#e0e0f0;margin-bottom:16px">下载 WM 优化助手</h2>
-  <p style="color:#888;margin-bottom:24px">支持 Windows 10/11 x64 · 完全免费</p>
-  <a href="https://cdn.jsdelivr.net/gh/Oyrs-666/wm-optimizer@master/WM优化助手-Setup-v2.0.1.exe" class="nav-btn" style="font-size:16px;padding:14px 36px;">下载安装包 (EXE)</a>
-  <p style="color:#666;font-size:12px;margin-top:12px">当前版本 v2.0.1 · 约 200MB</p>
+<!-- VIP 会员 -->
+<section class="section-padding" id="vip">
+  <div class="container">
+    <div class="section-title">
+      <h2>VIP 会员</h2>
+      <p>开通 VIP 解锁全部高级优化功能，让游戏体验更进一步</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-name">天卡</div>
+        <div class="pricing-price">&#165;3<span>/天</span></div>
+        <div class="pricing-desc">适合短期体验</div>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">周卡</div>
+        <div class="pricing-price">&#165;12<span>/周</span></div>
+        <div class="pricing-desc">适合周末冲分</div>
+      </div>
+      <div class="pricing-card popular">
+        <div class="pricing-badge">&#x2B50; 推荐</div>
+        <div class="pricing-name">月卡</div>
+        <div class="pricing-price">&#165;28<span>/月</span></div>
+        <div class="pricing-desc">日均不到 1 元，性价比最高</div>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">季卡</div>
+        <div class="pricing-price">&#165;45<span>/季</span></div>
+        <div class="pricing-desc">立省 39 元，省心省力</div>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">年卡</div>
+        <div class="pricing-price">&#165;88<span>/年</span></div>
+        <div class="pricing-desc">立省 248 元，忠实玩家首选</div>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:13px;color:#707080;margin-top:24px">软件内扫码付款，备注邮箱账号，联系客服审核后开通</p>
+  </div>
 </section>
 
+<!-- 更新日志 -->
+<section class="section-padding" id="changelog" style="background:rgba(255,255,255,.01)">
+  <div class="container">
+    <div class="section-title">
+      <h2>更新日志</h2>
+      <p>每一次更新都让优化更强大</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="changelog">
+      <div class="cl-item">
+        <div class="cl-header">
+          <span class="cl-version">v2.0.1</span>
+          <span class="cl-date">2026-07-12</span>
+        </div>
+        <ul class="cl-changes">
+          <li>VIP 价格调整为天卡 ¥3 / 周卡 ¥12 / 月卡 ¥28 / 季卡 ¥45 / 年卡 ¥88</li>
+          <li>付款页面新增客服微信联系方式：biqili1783</li>
+          <li>官网下载升级为 jsDelivr CDN 全球加速，国内下载速度大幅提升</li>
+          <li>优化自动更新检测机制，检测到新版本引导至官网下载</li>
+          <li>官网全面改版，更专业的视觉呈现</li>
+        </ul>
+      </div>
+      <div class="cl-item">
+        <div class="cl-header">
+          <span class="cl-version">v2.0.0</span>
+          <span class="cl-date">2026-07-10</span>
+        </div>
+        <ul class="cl-changes">
+          <li>VIP 会员系统正式上线，支持扫码开通</li>
+          <li>游戏路径记忆功能，无需每次重复设置</li>
+          <li>安装包增加免责声明页面，用户需同意后继续</li>
+          <li>修复非 VIP 用户无法看到付费卡片的问题</li>
+          <li>修复设置页面 VIP 状态显示错误</li>
+          <li>移除程序内置后台管理（已有独立管理程序）</li>
+        </ul>
+      </div>
+      <div class="cl-item">
+        <div class="cl-header">
+          <span class="cl-version">v1.0.0</span>
+          <span class="cl-date">2026-06-20</span>
+        </div>
+        <ul class="cl-changes">
+          <li>首个正式版本发布</li>
+          <li>CPU 核心调度 + 亲和性管理 + 预设保存</li>
+          <li>进程优化（对标 Process Lasso）+ 实时监控</li>
+          <li>Mem Reduct 级内存深度清理 + 定时自动清理</li>
+          <li>显卡驱动检测与智能推荐 + nvidiaProfileInspector 集成</li>
+          <li>ICC 色彩滤镜（Gamma / 色温 / RGB 增益 / 暗部平衡）</li>
+          <li>多平台电源计划一键导入（DUN / Intel / X3D）</li>
+          <li>系统优化（服务管理 / 隐私设置 / 启动项管理）</li>
+          <li>赛博朋克风格 UI + 粒子特效背景</li>
+          <li>实时硬件监控环形仪表盘</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 客服联系 -->
+<section class="section-padding" id="contact">
+  <div class="container">
+    <div class="section-title">
+      <h2>联系我们</h2>
+      <p>有任何问题或建议？随时联系客服</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="contact-section">
+      <div class="contact-card">
+        <h3>&#x1F4AC; 售后客服</h3>
+        <div class="contact-wechat">
+          <span class="contact-wechat-icon">&#x1F4F1;</span>
+          biqili1783
+        </div>
+        <p style="font-size:14px;color:#9090a8;margin-bottom:4px">微信扫码或搜索添加</p>
+        <p class="contact-note">开通 VIP、技术支持、问题反馈，请备注「WM优化助手」</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 制作团队 -->
+<section class="section-padding" style="background:rgba(255,255,255,.01)">
+  <div class="container">
+    <div class="section-title">
+      <h2>制作团队</h2>
+      <p>用心调试，以性能表达，用数据说话</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar av1">H</div>
+        <div class="team-name">浩博电竞</div>
+        <div class="team-role">产品设计 & 优化方案</div>
+        <div class="team-desc">资深电竞优化师，多年游戏性能调校经验。负责整体产品规划与优化方案设计</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar av2">雾</div>
+        <div class="team-name">抖音雾蒙蒙</div>
+        <div class="team-role">技术开发 & ICC 调校</div>
+        <div class="team-desc">全栈开发者，专注 Windows 系统底层优化与色彩管理。负责核心功能开发与 ICC 滤镜调校</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 下载 -->
+<section class="section-padding download-section" id="download">
+  <div class="container">
+    <div class="download-card">
+      <h2>&#x2B07; 下载 WM 优化助手</h2>
+      <p class="ver">最新版本 v2.0.1 · Windows 10/11 x64 · 完全免费</p>
+      <a href="https://cdn.jsdelivr.net/gh/Oyrs-666/wm-optimizer@master/WM优化助手-Setup-v2.0.1.exe" class="btn-dl">&#x2B07; 下载安装包</a>
+      <p class="dl-info">文件大小约 76MB · jsDelivr CDN 全球加速下载</p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
 <footer class="footer">
-  &copy; 2026 浩博电竞优化团队 · WM 优化助手 · 用心调试，用数据说话
+  <p><strong>WM 优化助手</strong> &copy; 2026 浩博电竞优化团队 · 用心调试，用数据说话</p>
+  <p style="margin-top:4px">本软件为通用电脑优化工具，与任何游戏厂商无合作、授权、关联关系</p>
 </footer>
 
 <script>
 // 粒子背景
-var cv = document.getElementById('bg-canvas'), ctx = cv.getContext('2d'), particles = [];
+(function(){
+var cv=document.getElementById('bg-canvas'),ctx=cv.getContext('2d'),particles=[],mouse={x:-1000,y:-1000};
 function resize(){cv.width=window.innerWidth;cv.height=window.innerHeight}
 resize();window.addEventListener('resize',resize);
-for(var i=0;i<40;i++)particles.push({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*2+.5,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3});
+document.addEventListener('mousemove',function(e){mouse.x=e.clientX;mouse.y=e.clientY});
+for(var i=0;i<50;i++)particles.push({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*2+1,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,life:Math.random()});
 (function loop(){
   ctx.clearRect(0,0,cv.width,cv.height);
-  for(var i=0;i<particles.length;i++){var p=particles[i];p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=cv.width;if(p.x>cv.width)p.x=0;if(p.y<0)p.y=cv.height;if(p.y>cv.height)p.y=0;
-    var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);g.addColorStop(0,'rgba(100,180,240,'+(.3+Math.sin(Date.now()/2000+i)*.15)+')');g.addColorStop(1,'transparent');
-    ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,p.r*3,0,Math.PI*2);ctx.fill();
-    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(150,200,240,.4)';ctx.fill();}
+  for(var i=0;i<particles.length;i++){
+    var p=particles[i];
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<-20)p.x=cv.width+20;if(p.x>cv.width+20)p.x=-20;
+    if(p.y<-20)p.y=cv.height+20;if(p.y>cv.height+20)p.y=-20;
+    var dx=mouse.x-p.x,dy=mouse.y-p.y,dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<180){p.vx+=dx/dist*.02;p.vy+=dy/dist*.02;
+      var speed=Math.sqrt(p.vx*p.vx+p.vy*p.vy);if(speed>1.5){p.vx=p.vx/speed*1.5;p.vy=p.vy/speed*1.5}
+    }
+    var a=.25+.15*Math.sin(Date.now()/2500+i);
+    var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);
+    g.addColorStop(0,'rgba(100,170,240,'+a+')');g.addColorStop(.5,'rgba(120,160,220,'+(a*.4)+')');g.addColorStop(1,'transparent');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,p.r*4,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(160,210,250,'+(a+0.1)+')';ctx.fill();
+  }
+  // 连线
+  for(var i=0;i<particles.length;i++){
+    for(var j=i+1;j<particles.length;j++){
+      var dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<100){ctx.strokeStyle='rgba(100,160,220,'+(.04*(1-dist/100))+')';ctx.lineWidth=.4;ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke()}
+    }
+  }
   requestAnimationFrame(loop);
+})();
 })();
 </script>
 </body>
