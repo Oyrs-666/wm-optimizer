@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WM优化助手 - 开通审核</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a14;color:#c0c0d0;font-family:-apple-system,BlinkMacSystemFont,"Microsoft YaHei",sans-serif;padding:40px;max-width:800px;margin:0 auto}
+h1{font-size:24px;color:#e0e0f0;margin-bottom:24px}
+.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px;margin-bottom:12px}
+.card h3{font-size:16px;color:#d0d0f0;margin-bottom:8px}
+.card p{font-size:13px;color:#888;margin:4px 0}
+.card .btns{margin-top:12px;display:flex;gap:8px}
+.btn{ padding:8px 20px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
+.btn-approve{background:#4a8a4a;color:#fff}
+.btn-reject{background:#8a4a4a;color:#fff}
+.btn-refresh{background:#4a6a8a;color:#fff;margin-bottom:20px}
+.empty{text-align:center;padding:60px;color:#666;font-size:14px}
+</style>
+</head>
+<body>
+<h1>🎫 VIP 开通审核</h1>
+<button class="btn btn-refresh" onclick="load()">🔄 刷新列表</button>
+<div id="list"></div>
+<script>
+const API = 'https://migbxhwvgcddtlhmqtry.supabase.co/functions/v1/quick-processor';
+const KEY = 'wm-admin-2026';
+
+async function load() {
+  document.getElementById('list').innerHTML = '<div class="empty">加载中...</div>';
+  try {
+    const r = await fetch(API + '?pending=1');
+    const items = await r.json();
+    if (!items.length) { document.getElementById('list').innerHTML = '<div class="empty">✅ 没有待审核的申请</div>'; return; }
+    let h = '';
+    items.forEach((item, i) => {
+      h += '<div class="card">'
+        + '<h3>#' + (i+1) + ' ' + item.email + '</h3>'
+        + '<p>订单号: ' + item.orderNo + '</p>'
+        + '<p>套餐: ' + item.days + '天 | 提交时间: ' + (item.submittedAt || '') + '</p>'
+        + '<div class="btns">'
+        + '<button class="btn btn-approve" onclick="approve(\'' + item.orderNo + '\')">✅ 批准</button>'
+        + '<button class="btn btn-reject" onclick="reject(\'' + item.orderNo + '\')">❌ 拒绝</button>'
+        + '</div></div>';
+    });
+    document.getElementById('list').innerHTML = h;
+  } catch(e) { document.getElementById('list').innerHTML = '<div class="empty">❌ 加载失败: ' + e.message + '</div>'; }
+}
+
+async function approve(orderNo) {
+  if (!confirm('确认批准订单 ' + orderNo + ' ？\n请先在 ezfpy 后台确认该订单已支付。')) return;
+  try {
+    const r = await fetch(API + '?approve=1', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({key:KEY, orderNo}) });
+    const t = await r.text();
+    alert(t === 'approved' ? '✅ 已批准！VIP已开通' : '❌ 操作失败: ' + t);
+    load();
+  } catch(e) { alert('错误: ' + e.message); }
+}
+
+async function reject(orderNo) {
+  if (!confirm('确认拒绝订单 ' + orderNo + ' ？')) return;
+  try {
+    await fetch(API + '?approve=1', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({key:KEY, orderNo, reject:true}) });
+    load();
+  } catch(e) { alert('错误: ' + e.message); }
+}
+
+load();
+</script>
+</body>
+</html>
