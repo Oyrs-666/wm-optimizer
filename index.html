@@ -16,7 +16,7 @@ body{background:#08080f;color:#c0c0d8;font-family:-apple-system,BlinkMacSystemFo
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(8,8,15,.92);backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(255,255,255,.06);transition:all .3s}
 .nav-inner{max-width:1200px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
 .nav-logo{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;color:#e8e8f8;letter-spacing:.5px;text-decoration:none}
-.nav-logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff}
+.nav-logo-icon{width:32px;height:32px;border-radius:8px}
 .nav-links{display:flex;align-items:center;gap:32px;list-style:none}
 .nav-links a{color:#9090a8;text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}
 .nav-links a:hover{color:#d0d0f0}
@@ -118,7 +118,7 @@ body{background:#08080f;color:#c0c0d8;font-family:-apple-system,BlinkMacSystemFo
 <nav class="nav">
   <div class="nav-inner">
     <a href="#" class="nav-logo">
-      <div class="nav-logo-icon">W</div>
+      <img src="logo.png" class="nav-logo-icon" width="32" height="32" alt="" style="object-fit:cover">
       WM优化助手
     </a>
     <ul class="nav-links">
@@ -173,7 +173,7 @@ body{background:#08080f;color:#c0c0d8;font-family:-apple-system,BlinkMacSystemFo
       <div class="feature-card"><div class="feature-icon">&#x1F4E6;</div><h3>应用商店</h3><p>49 款精品软件 · 11 个分类：游戏平台/硬件检测/直播录制/远程控制/影音娱乐/效率工具等</p></div>
       <div class="feature-card"><div class="feature-icon">&#x1F4CA;</div><h3>实时硬件监控</h3><p>CPU / 内存 / GPU / 磁盘环形仪表盘，温度、占用率、频率一目了然</p></div>
       <div class="feature-card"><div class="feature-icon">&#x1F511;</div><h3>完全免费</h3><p>所有功能永久免费开放，无需付费、无需开通、无需激活，安装即用全部高级功能</p></div>
-      <div class="feature-card"><div class="feature-icon">&#x1F381;</div><h3>永久免费使用</h3><p>核心功能永久免费，不限制使用时间，不限制功能数量，真正为玩家服务</p></div>
+      <div class="feature-card"><div class="feature-icon">&#x1F3AE;</div><h3>游戏帧率解锁</h3><p>5档位（120/260/280/300/360 FPS）原位替换帧率槽，13项自检+三级恢复保护，画质配置全程只读</p></div>
     </div>
   </div>
 </section>
@@ -282,8 +282,14 @@ body{background:#08080f;color:#c0c0d8;font-family:-apple-system,BlinkMacSystemFo
       <div class="team-card">
         <div class="team-avatar av2">雾</div>
         <div class="team-name">抖音雾蒙蒙</div>
-        <div class="team-role">技术负责人 & 色彩专家</div>
-        <div class="team-desc">全栈开发者，专注 Windows 系统底层优化与 ICC 色彩管理。抖音优质创作者，负责核心功能开发</div>
+        <div class="team-role">🏆 首席开发者 & 技术总负责人</div>
+        <div class="team-desc">全栈技术大牛，独立完成 WM 优化助手全部核心功能模块开发。精通 Windows 系统底层优化、ICC 色彩管理、Electron 桌面开发与 NXPK 逆向工程。抖音优质科技创作者，以专业、严谨、极致的技术追求推动产品不断进化，是团队不可或缺的技术核心灵魂人物</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#06b6d4,#0891b2)">江</div>
+        <div class="team-name">江风</div>
+        <div class="team-role">帧率解锁技术顾问</div>
+        <div class="team-desc">为游戏帧率解锁功能提供核心思路与技术方案，NXPK 包体结构分析与帧率槽替换策略的关键贡献者。深厚的逆向工程功底为项目安全可靠提供了重要保障</div>
       </div>
     </div>
     <div style="text-align:center;margin-top:32px;padding:24px;border-radius:16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)">
