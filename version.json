@@ -1,6 +1,6 @@
 {
-  "version": "2.1.1",
-  "releaseNotes": "v2.1.1 更新·首页全新改版+硬件信息面板+无需登录+暗紫图标+关闭弹窗优化",
+  "version": "2.2.0",
+  "releaseNotes": "v2.2.0 更新·帧率解锁5档位+自检恢复+新暗紫棱形W图标+进程名优化+管理员检测修复",
   "downloadUrl": "https://wwars.lanzoup.com/wmyouhua",
-  "releaseDate": "2026-07-14"
+  "releaseDate": "2026-07-15"
 }
