@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>浩博电竞 · 专业电脑调试服务 | 明日之后专精</title>
+<meta name="description" content="浩博电竞优化团队 - 专业Windows系统深度调校，CPU/内存超频，低压优化。明日之后专精，全程直播调试，不满意全额退款。">
+<style>
+:root {
+  --bg: #050510; --surface: rgba(255,255,255,.015); --border: rgba(255,255,255,.05);
+  --purple: #8b5cf6; --purple-l: #a78bfa; --purple-d: #7c3aed;
+  --green: #4ade80; --amber: #f59e0b; --red: #ef4444;
+  --text: #c8c8d8; --text-muted: #808098; --text-dim: #585878;
+  --radius: 14px; --radius-sm: 10px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;line-height:1.65;overflow-x:hidden}
+::selection{background:rgba(139,92,246,.3);color:#fff}
+
+/* Background */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55}
+.container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 28px}
+
+/* Nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0;background:rgba(5,5,16,.88);backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid rgba(139,92,246,.1);transition:all .3s}
+.nav-inner{max-width:1200px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:800;color:#d0c8f8;text-decoration:none;letter-spacing:.5px}
+.nav-brand img{width:34px;height:34px;border-radius:8px}
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+.nav-links a{color:var(--text-muted);text-decoration:none;font-size:13.5px;font-weight:500;transition:color .2s;letter-spacing:.3px}
+.nav-links a:hover{color:#d0c8f0}
+.nav-cta{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:8px;background:linear-gradient(135deg,var(--purple-d),var(--purple));color:#fff;font-size:13px;font-weight:600;text-decoration:none;transition:all .3s;box-shadow:0 2px 12px rgba(139,92,246,.25)}
+.nav-cta:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(139,92,246,.4)}
+
+/* Hero */
+.hero{position:relative;z-index:1;text-align:center;padding:170px 28px 90px}
+.hero-glow{position:absolute;top:10%;left:50%;transform:translateX(-50%);width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.12),transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:20px;border:1px solid rgba(139,92,246,.2);font-size:12.5px;color:var(--purple-l);margin-bottom:24px;background:rgba(139,92,246,.05);letter-spacing:.5px}
+.hero-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-size:clamp(38px,5.5vw,60px);font-weight:900;letter-spacing:1px;line-height:1.2;margin-bottom:18px}
+.hero h1 .grad{background:linear-gradient(135deg,var(--purple-l),#c4b5fd,var(--purple-l),#d8b4fe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero h1 .white{color:#e8e8f8;-webkit-text-fill-color:#e8e8f8}
+.hero-sub{font-size:17px;color:var(--text-muted);max-width:640px;margin:0 auto 32px;line-height:1.7}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.hero-btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 38px;border-radius:12px;background:linear-gradient(135deg,var(--purple-d),var(--purple));color:#fff;font-size:16px;font-weight:700;text-decoration:none;transition:all .3s;box-shadow:0 4px 24px rgba(139,92,246,.35)}
+.hero-btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(139,92,246,.5)}
+.hero-btn-outline{display:inline-flex;align-items:center;gap:8px;padding:14px 38px;border-radius:12px;border:1.5px solid rgba(255,255,255,.14);color:#c0c0e0;font-size:16px;font-weight:600;text-decoration:none;transition:all .3s}
+.hero-btn-outline:hover{border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.03)}
+.hero-stats{display:flex;gap:48px;justify-content:center;margin-top:48px;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-num{font-size:36px;font-weight:900;color:#e0d8f8;letter-spacing:1px}
+.hero-stat-label{font-size:12px;color:var(--text-dim);margin-top:4px;letter-spacing:1px}
+
+/* Section */
+.section{padding:90px 0;position:relative;z-index:1}
+.section-header{text-align:center;margin-bottom:56px}
+.section-label{display:inline-block;font-size:11px;font-weight:700;color:var(--purple-l);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;padding:4px 12px;border-radius:10px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.12)}
+.section-header h2{font-size:32px;font-weight:800;color:#e0d8f0;margin-bottom:12px;letter-spacing:.5px}
+.section-header p{font-size:15px;color:var(--text-muted);max-width:580px;margin:0 auto}
+.section-divider{width:56px;height:3px;background:linear-gradient(90deg,var(--purple-d),var(--purple));margin:14px auto 0;border-radius:2px}
+
+/* Game Focus Card */
+.game-spotlight{max-width:720px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.game-card{padding:36px 28px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);text-align:center;transition:all .35s;position:relative;overflow:hidden}
+.game-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--purple),transparent);opacity:0;transition:opacity .35s}
+.game-card:hover::before{opacity:1}
+.game-card:hover{border-color:rgba(139,92,246,.2);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.game-card-icon{font-size:42px;margin-bottom:16px}
+.game-card h3{font-size:22px;font-weight:800;color:#e0d8f0;margin-bottom:8px}
+.game-card .tag{display:inline-block;padding:3px 10px;border-radius:8px;background:rgba(139,92,246,.12);color:var(--purple-l);font-size:11px;font-weight:600;margin-bottom:12px}
+.game-card p{font-size:13px;color:var(--text-muted);line-height:1.7}
+
+/* Process / Workflow */
+.process-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:1000px;margin:0 auto}
+.process-step{text-align:center;position:relative}
+.process-step::after{content:'';position:absolute;top:28px;left:calc(50% + 30px);width:calc(100% - 60px);height:1px;background:linear-gradient(90deg,rgba(139,92,246,.3),transparent)}
+.process-step:last-child::after{display:none}
+.process-num{width:56px;height:56px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--purple-d),var(--purple));box-shadow:0 0 24px rgba(139,92,246,.25)}
+.process-step h4{font-size:15px;font-weight:700;color:#d0c8e8;margin-bottom:6px}
+.process-step p{font-size:12px;color:var(--text-muted);line-height:1.5}
+
+/* Pricing */
+.pricing-wrapper{max-width:1050px;margin:0 auto}
+.pricing-tabs{display:flex;justify-content:center;gap:4px;margin-bottom:32px;background:var(--surface);border-radius:12px;padding:4px;border:1px solid var(--border);width:fit-content;margin-left:auto;margin-right:auto}
+.pricing-tab{padding:10px 28px;border-radius:10px;border:none;background:transparent;color:var(--text-muted);font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;font-family:inherit}
+.pricing-tab.active{background:rgba(139,92,246,.15);color:var(--purple-l)}
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.pricing-card{position:relative;padding:28px 22px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);transition:all .35s;display:flex;flex-direction:column}
+.pricing-card:hover{border-color:rgba(139,92,246,.2);transform:translateY(-2px);box-shadow:0 10px 36px rgba(0,0,0,.25)}
+.pricing-card.popular{border-color:rgba(139,92,246,.3);background:rgba(139,92,246,.04);box-shadow:0 0 40px rgba(139,92,246,.06)}
+.pricing-badge{position:absolute;top:-10px;right:16px;padding:4px 12px;border-radius:10px;background:linear-gradient(135deg,var(--amber),#d97706);color:#fff;font-size:11px;font-weight:700}
+.pricing-card h4{font-size:18px;font-weight:700;color:#e0d8f0;margin-bottom:4px}
+.pricing-card .p-desc{font-size:12px;color:var(--text-dim);margin-bottom:14px;min-height:32px}
+.pricing-card .price{font-size:30px;font-weight:900;color:#e0d8f0;margin-bottom:12px}
+.pricing-card .price span{font-size:14px;font-weight:400;color:var(--text-muted)}
+.pricing-card .features{list-style:none;font-size:13px;color:var(--text-muted);line-height:2;flex:1}
+.pricing-card .features li::before{content:'✓ ';color:var(--green);font-weight:700}
+.pricing-cta{display:block;text-align:center;padding:11px;border-radius:8px;margin-top:16px;font-size:13px;font-weight:700;text-decoration:none;transition:all .3s}
+.pricing-cta.primary{background:linear-gradient(135deg,var(--purple-d),var(--purple));color:#fff}
+.pricing-cta.primary:hover{box-shadow:0 4px 20px rgba(139,92,246,.35)}
+.pricing-cta.outline{border:1px solid rgba(255,255,255,.12);color:var(--text);background:rgba(255,255,255,.03)}
+
+/* Guarantee */
+.guarantee-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:1000px;margin:0 auto}
+.guarantee-card{padding:28px 18px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);text-align:center;transition:all .3s}
+.guarantee-card:hover{border-color:rgba(139,92,246,.15);transform:translateY(-2px)}
+.guarantee-card .g-icon{font-size:32px;margin-bottom:12px}
+.guarantee-card h4{font-size:14px;font-weight:700;color:#d0c8e0;margin-bottom:6px}
+.guarantee-card p{font-size:12px;color:var(--text-dim);line-height:1.5}
+
+/* Extra Services */
+.extra-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;max-width:1000px;margin:0 auto}
+.extra-item{display:flex;align-items:center;gap:10px;padding:16px 18px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--border);font-size:14px;color:var(--text);transition:all .2s}
+.extra-item:hover{border-color:rgba(139,92,246,.2);transform:translateY(-1px)}
+.extra-item .ei-icon{font-size:20px;flex-shrink:0}
+
+/* Team */
+.team-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:700px;margin:0 auto}
+.team-card{display:flex;align-items:center;gap:18px;padding:24px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);transition:all .3s}
+.team-card:hover{border-color:rgba(139,92,246,.15);transform:translateY(-2px)}
+.team-avatar{width:60px;height:60px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.team-info h4{font-size:16px;font-weight:700;color:#e0d8f0;margin-bottom:2px}
+.team-info .role{font-size:12px;color:var(--text-muted);margin-bottom:6px}
+.team-info .wx{font-size:13px;color:var(--green);font-weight:600}
+
+/* Notice */
+.notice-section{max-width:900px;margin:0 auto}
+.notice-card{padding:28px 32px;border-radius:var(--radius);background:rgba(245,158,11,.03);border:1px solid rgba(245,158,11,.12);margin-bottom:16px}
+.notice-card h4{font-size:15px;color:var(--amber);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.notice-card ul{list-style:none;font-size:13.5px;color:#b0a090;line-height:2}
+.notice-card ul li::before{content:'✦ ';color:var(--amber)}
+
+/* FAQ */
+.faq-grid{max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.faq-item{padding:20px 24px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--border);cursor:pointer;transition:all .25s}
+.faq-item:hover{border-color:rgba(139,92,246,.12)}
+.faq-q{font-size:14px;font-weight:700;color:#d0c8e0;display:flex;justify-content:space-between;align-items:center}
+.faq-a{font-size:13px;color:var(--text-muted);line-height:1.7;margin-top:10px;display:none}
+.faq-item.open .faq-a{display:block}
+.faq-item.open{border-color:rgba(139,92,246,.25);background:rgba(139,92,246,.03)}
+
+/* Footer */
+.footer{text-align:center;padding:48px 28px;border-top:1px solid var(--border);position:relative;z-index:1}
+.footer h3{font-size:18px;color:#d0c8e0;margin-bottom:8px}
+.footer .contact-row{display:flex;gap:32px;justify-content:center;flex-wrap:wrap;margin:20px 0}
+.footer .contact-item{display:flex;align-items:center;gap:8px;padding:10px 20px;border-radius:8px;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.1);color:var(--green);font-size:14px;font-weight:600}
+.footer .copyright{margin-top:24px;font-size:12px;color:var(--text-dim)}
+
+@media(max-width:768px){
+  .process-grid{grid-template-columns:1fr 1fr}
+  .process-step::after{display:none}
+  .guarantee-grid{grid-template-columns:1fr 1fr}
+  .team-grid{grid-template-columns:1fr}
+  .game-spotlight{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .hero{padding:120px 16px 60px}
+  .hero h1{font-size:30px}
+  .hero-stats{gap:24px}
+  .pricing-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-brand"><img src="logo.png" alt="">浩博电竞</a>
+    <ul class="nav-links">
+      <li><a href="#process">调试流程</a></li>
+      <li><a href="#pricing">服务价格</a></li>
+      <li><a href="#guarantee">服务保障</a></li>
+      <li><a href="#faq">常见问题</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">📱 预约调试</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge"><span class="dot"></span> 明日之后专属优化服务 · 专业提升游戏性能</div>
+  <h1><span class="white">明日之后深度调校</span><br><span class="grad">解决战斗掉帧 · 切枪快人一步</span></h1>
+  <p class="hero-sub">明日之后专属优化 · 争霸赛战斗场景深度调校<br>超频 CPU 内存 · 修复隐藏性能限制 · 大幅降低延迟 · 提升网络传输速度<br>每一台电脑都经过严格散热评估，不达标准绝不盲目操作</p>
+  <div class="hero-btns">
+    <a href="#pricing" class="hero-btn-primary">查看服务方案 →</a>
+    <a href="#process" class="hero-btn-outline">了解调试流程</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-num">1000+</div><div class="hero-stat-label">累计调试设备</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">4.9</div><div class="hero-stat-label">客户好评率</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">4月</div><div class="hero-stat-label">超频售后保障</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">7×24</div><div class="hero-stat-label">售后技术支持</div></div>
+  </div>
+</section>
+
+<section class="section" id="game" style="padding-top:0">
+  <div class="container">
+    <div class="game-spotlight">
+      <div class="game-card">
+        <div class="game-card-icon">🎯</div>
+        <h3>明日之后专属优化</h3>
+        <div class="tag">核心专精</div>
+        <p>专注解决<strong>争霸赛、南希市等战斗场景掉帧</strong>问题。超频 CPU 与内存频率，深度优化 Windows 系统设置，修复影响游戏的隐藏性能限制，大幅降低操作延迟，提升网络传输速度，<strong>让切枪更快更稳</strong>。</p>
+      </div>
+      <div class="game-card">
+        <div class="game-card-icon">⚡</div>
+        <h3>全方位性能调校</h3>
+        <div class="tag">附加免费</div>
+        <p>三角洲行动画质调试、3A 游戏滤镜调校、OBS 直播伴侣推流设置、显卡驱动深度优化、网络协议栈加速等需求均可免费附加调试。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="process">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">WORKFLOW</div>
+      <h2>调试流程</h2>
+      <p>透明化操作，每一步都可追溯</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="process-grid">
+      <div class="process-step">
+        <div class="process-num">1</div>
+        <h4>需求沟通</h4>
+        <p>了解设备配置、使用场景和期望效果，给出初步方案建议</p>
+      </div>
+      <div class="process-step">
+        <div class="process-num">2</div>
+        <h4>散热评估</h4>
+        <p>远程检查温度、功耗和散热方案，散热不达标先建议改进</p>
+      </div>
+      <div class="process-step">
+        <div class="process-num">3</div>
+        <h4>深度调校</h4>
+        <p>全程直播操作：系统优化 → 超频 → 低压 → 稳定性验证</p>
+      </div>
+      <div class="process-step">
+        <div class="process-num">4</div>
+        <h4>交付验收</h4>
+        <p>提供优化报告，性能对比截图，售后期间随时沟通调整</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing" style="background:rgba(255,255,255,.004)">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">PRICING</div>
+      <h2>服务方案与价格</h2>
+      <p>所有方案均含系统底层优化，全程可直播，操作透明</p>
+      <div class="section-divider"></div>
+    </div>
+
+    <!-- 笔记本 -->
+    <div style="margin-bottom:40px;text-align:center"><span style="font-size:20px;font-weight:800;color:var(--purple-l);padding:6px 20px;border-radius:8px;background:rgba(139,92,246,.08)">💻 笔记本方案</span></div>
+    <div class="pricing-grid" style="margin-bottom:48px">
+      <div class="pricing-card">
+        <h4>单系统优化</h4><p class="p-desc">纯净系统底层调校 · 不改硬件参数</p>
+        <div class="price">98<span> 元</span></div>
+        <ul class="features">
+          <li>重装定制精简系统，纯净无捆绑无冗余</li><li>游戏 Low 帧大幅提升，争霸赛不掉帧</li><li>网络延迟显著降低，切枪响应更快更稳</li><li>CPU 响应速度提升，场景切换不卡顿</li><li>内存占用大幅减少，后台进程精简至极致</li><li>显卡渲染效率提升，画面流畅度明显改善</li><li>开机速度加快，系统整体轻快如新</li><li>1 个月系统售后，随时优化调整</li>
+        </ul>
+        <a href="#contact" class="pricing-cta outline">预约调试</a>
+      </div>
+      <div class="pricing-card popular">
+        <div class="pricing-badge">🔥 热门</div>
+        <h4>Intel 超频 + 系统</h4><p class="p-desc">CPU/内存超频 + 完整系统优化</p>
+        <div class="price">188<span> 元</span></div>
+        <ul class="features">
+          <li>CPU 频率提升 15-30%，游戏帧数直接上涨</li><li>内存延迟大幅降低，数据吞吐更快</li><li>争霸赛多人同屏稳定不掉帧</li><li>切枪/开镜/跳跃等操作响应更快</li><li>包含全部系统优化效果（同左栏）</li><li>AIDA64/TM5 多轮验证，稳定运行不蓝屏</li><li>4 个月超频售后</li>
+        </ul>
+        <a href="#contact" class="pricing-cta primary">立即预约</a>
+      </div>
+      <div class="pricing-card">
+        <h4>AMD 全核负压 + 系统</h4><p class="p-desc">全核心统一电压优化 · 降10-20°C</p>
+        <div class="price">168<span> 元</span></div>
+        <ul class="features">
+          <li>CPU 温度下降 10-20°C，风扇噪音明显减小</li><li>温度降低后实际 Boost 频率更高更持久</li><li>游戏帧数稳定提升，长时间不降频</li><li>笔记本键盘面温度明显降低</li><li>包含全部系统优化效果（同单系统优化）</li><li>Cinebench/OCCT 烤机零错误通过</li><li>4 个月超频售后</li>
+        </ul>
+        <a href="#contact" class="pricing-cta outline">预约调试</a>
+      </div>
+      <div class="pricing-card">
+        <h4>AMD 分核负压 + 系统</h4><p class="p-desc">逐核心精细调校 · 精度远超全核方案</p>
+        <div class="price">238<span> 元</span></div>
+        <ul class="features">
+          <li>每核心独立调校，降压空间比全核方案大 20-40%</li><li>温度比全核方案再低 5-10°C</li><li>体质好的核心频率更高，游戏帧数上限更高</li><li>全程不损失稳定性，游戏不闪退不蓝屏</li><li>包含全部系统优化效果（同单系统优化）</li><li>每核心逐一验证，零妥协零隐患</li><li>4 个月超频售后</li>
+        </ul>
+        <a href="#contact" class="pricing-cta outline">预约调试</a>
+      </div>
+    </div>
+
+    <!-- 台式 -->
+    <div style="margin-bottom:40px;text-align:center"><span style="font-size:20px;font-weight:800;color:var(--green);padding:6px 20px;border-radius:8px;background:rgba(34,197,94,.06)">🖥️ 台式机方案</span></div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h4>单系统优化</h4><p class="p-desc">纯净系统底层调校 · 不改硬件参数</p>
+        <div class="price">98<span> 元</span></div>
+        <ul class="features">
+          <li>重装定制精简系统，纯净无捆绑无冗余</li><li>游戏 Low 帧大幅提升，争霸赛不掉帧</li><li>网络延迟显著降低，切枪响应更快更稳</li><li>CPU 响应速度提升，场景切换不卡顿</li><li>内存占用大幅减少，后台进程精简至极致</li><li>显卡渲染效率提升，画面流畅度明显改善</li><li>开机速度加快，系统整体轻快如新</li><li>1 个月系统售后，随时优化调整</li>
+        </ul>
+        <a href="#contact" class="pricing-cta outline">预约调试</a>
+      </div>
+      <div class="pricing-card popular">
+        <div class="pricing-badge">🔥 热门</div>
+        <h4>Intel DDR4 + U超频 + 系统</h4><p class="p-desc">内存+CPU 全面超频 · 性价比之选</p>
+        <div class="price">238<span> 元</span></div>
+        <ul class="features">
+          <li>CPU 频率提升 15-25%，游戏帧数直接上涨</li><li>内存延迟降低 30-50%，数据吞吐更快</li><li>争霸赛多人同屏稳定不掉帧</li><li>切枪/开镜等操作响应速度明显提升</li><li>包含全部系统优化效果（同单系统优化）</li><li>AIDA64/TM5 烤机零错误，长期稳定运行</li><li>4 个月超频售后</li>
+        </ul>
+        <a href="#contact" class="pricing-cta primary">立即预约</a>
+      </div>
+      <div class="pricing-card">
+        <h4>Intel DDR5 + U超频 + 系统</h4><p class="p-desc">最新平台深度调校 · 约 6 小时精调</p>
+        <div class="price">388<span> 元</span></div>
+        <ul class="features">
+          <li>DDR5 内存读取速度提升 40-60%</li><li>CPU 全核超频后游戏帧数上限大幅提升</li><li>内存延迟压缩至极致，吃鸡/永劫等游戏帧数暴涨</li><li>渲染管线数据吞吐瓶颈彻底解除</li><li>包含全部系统优化效果（同单系统优化）</li><li>多轮 MemTest 零错误验证，稳定如山</li><li>4 个月超频售后</li>
+        </ul>
+        <a href="#contact" class="pricing-cta outline">预约调试</a>
+      </div>
+      <div class="pricing-card">
+        <h4>AMD DDR4 + U超频 + 系统</h4><p class="p-desc">AMD 平台内存+CPU 全面优化</p>
+        <div class="price">198<span> 元</span></div>
+        <ul class="features">
+          <li>FCLK 同步后内存延迟大幅降低</li><li>CPU 全核 Boost 频率提升 5-10%</li><li>游戏帧数稳定提升，Low 帧改善显著</li><li>AMD 平台专属优化，释放完整潜力</li><li>包含全部系统优化效果（同单系统优化）</li><li>AIDA64/y-cruncher 验证稳定可靠</li><li>4 个月超频售后</li>
+        </ul>
+        <a href="#contact" class="pricing-cta outline">预约调试</a>
+      </div>
+      <div class="pricing-card">
+        <h4>AMD 全核负压 + 内存 + 系统</h4><p class="p-desc">全核心电压优化 · 降 10-20°C</p>
+        <div class="price">188<span> 元</span></div>
+        <ul class="features">
+          <li>CPU 温度下降 10-20°C，风扇噪音明显减小</li><li>温度降低后实际 Boost 频率更高更持久</li><li>内存超频后游戏加载速度大幅提升</li><li>长时间游戏不降频，帧数始终稳定</li><li>包含全部系统优化效果（同单系统优化）</li><li>Cinebench/OCCT 烤机零错误</li><li>4 个月超频售后</li>
+        </ul>
+        <a href="#contact" class="pricing-cta outline">预约调试</a>
+      </div>
+      <div class="pricing-card">
+        <h4>AMD 精准分核负压 + 内存 + 系统</h4><p class="p-desc">逐核心独立调校 · 精度碾压全核方案</p>
+        <div class="price">288<span> 元</span></div>
+        <ul class="features">
+          <li>降压空间比全核方案大 20-40%</li><li>温度比全核方案再低 5-10°C</li><li>体质好的核心频率跑得更高，游戏帧数更高</li><li>内存超频 + 分核负压双管齐下，效果叠加</li><li>包含全部系统优化效果（同单系统优化）</li><li>每核心逐一验证，零隐患零妥协</li><li>4 个月超频售后</li>
+        </ul>
+        <a href="#contact" class="pricing-cta outline">预约调试</a>
+      </div>
+      <div class="pricing-card popular">
+        <div class="pricing-badge">🏆 旗舰</div>
+        <h4>AMD CCD分核负压 + 内存 + 系统</h4><p class="p-desc">CCD 级别顶级调校 · 双 CCD 独立优化</p>
+        <div class="price">388<span> 元</span></div>
+        <ul class="features">
+          <li>双 CCD 独立优化，降压潜力挖掘到极致</li><li>高频 CCD 侧重性能，低频 CCD 侧重降温</li><li>内存极限超频后读写速度大幅领先默认</li><li>AMD 平台能获得的最佳游戏体验</li><li>包含全部系统优化效果（同单系统优化）</li><li>多工况交叉验证，顶级稳定性保障</li><li>4 个月超频售后 · 不满意重新调</li>
+        </ul>
+        <a href="#contact" class="pricing-cta primary">立即预约</a>
+      </div>
+    </div>
+
+    <!-- 附加服务 -->
+    <div style="margin-top:56px;text-align:center">
+      <div style="font-size:18px;font-weight:700;color:#d0c8e0;margin-bottom:20px">✨ 免费附加服务</div>
+      <div class="extra-grid">
+        <div class="extra-item"><span class="ei-icon">🎮</span>三角洲行动画质调试</div>
+        <div class="extra-item"><span class="ei-icon">📊</span>明日之后 Low 帧调试</div>
+        <div class="extra-item"><span class="ei-icon">📹</span>直播伴侣推流设置</div>
+        <div class="extra-item"><span class="ei-icon">🎨</span>3A 游戏滤镜调试</div>
+        <div class="extra-item"><span class="ei-icon">🔧</span>显卡驱动深度优化</div>
+        <div class="extra-item"><span class="ei-icon">⚡</span>内存时序精细调校</div>
+        <div class="extra-item"><span class="ei-icon">📺</span>OBS 直播推流配置</div>
+        <div class="extra-item"><span class="ei-icon">🔥</span>散热方案专业建议</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="guarantee">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">GUARANTEE</div>
+      <h2>服务保障</h2>
+      <p>专业调试，放心交付</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="guarantee-grid">
+      <div class="guarantee-card">
+        <div class="g-icon">📹</div><h4>全程直播</h4><p>调试过程全程直播，操作透明可见，每一步都可追溯</p>
+      </div>
+      <div class="guarantee-card">
+        <div class="g-icon">🛡️</div><h4>售后保障</h4><p>超频 4 个月售后，系统 1 个月售后，期间随时沟通调整</p>
+      </div>
+      <div class="guarantee-card">
+        <div class="g-icon">🔍</div><h4>散热先行</h4><p>调试前严格评估散热状况，散热不达标绝不盲目超频</p>
+      </div>
+      <div class="guarantee-card">
+        <div class="g-icon">📋</div><h4>优化报告</h4><p>调校完成后提供详细性能优化报告与后续维护建议</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="notice">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">NOTICE</div>
+      <h2>调试须知</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="notice-section">
+      <div class="notice-card">
+        <h4>⏱️ 售后政策</h4>
+        <ul>
+          <li>超频调校享有 <strong style="color:#f59e0b">4 个月</strong> 免费售后维护，系统调校享有 <strong style="color:#f59e0b">1 个月</strong> 免费售后</li>
+          <li>售后期内因系统更新、驱动更新等原因导致的性能回退，免费重新调校</li>
+        </ul>
+      </div>
+      <div class="notice-card">
+        <h4>🔧 调试前准备</h4>
+        <ul>
+          <li>请提前备份重要数据到外部存储或云盘</li>
+          <li>关闭杀毒软件以便远程操作工具正常运行</li>
+          <li>确保网络稳定，调试期间不要断电或断网</li>
+          <li>提前告知特殊需求（如特定游戏优化、直播设置等）</li>
+        </ul>
+      </div>
+      <div class="notice-card">
+        <h4>⚠️ 重要声明</h4>
+        <ul>
+          <li>超频调试前会检查散热方案，<strong style="color:#f59e0b">散热不达标绝不盲目操作</strong></li>
+          <li>所有操作均为 Windows 公开合法的系统参数调节，不修改游戏文件</li>
+          <li>远程调试使用 ToDesk / 向日葵等正规远程控制软件</li>
+          <li>本服务为通用电脑优化，与任何游戏厂商无合作、授权或关联关系</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">FAQ</div>
+      <h2>常见问题</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="faq-grid">
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-q">调试需要多长时间？<span style="color:var(--purple-l)">+</span></div>
+        <div class="faq-a">单系统优化约 30-60 分钟。含超频的方案根据复杂度 2-6 小时不等。Intel DDR5 方案和 AMD CCD 分核方案耗时最长（约 6 小时）。</div>
+      </div>
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-q">调试后性能能提升多少？<span style="color:var(--purple-l)">+</span></div>
+        <div class="faq-a">因设备配置和散热条件不同有所差异。一般来说，系统优化可提升 10-20% Low 帧稳定性；CPU/内存超频可提升 15-30% 游戏帧数。我们会提供调试前后的性能对比数据。</div>
+      </div>
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-q">调试会有风险吗？<span style="color:var(--purple-l)">+</span></div>
+        <div class="faq-a">我们采用保守安全的调校策略。超频前先评估散热，不盲目拉高频率和电压。所有操作都是可逆的，不会对硬件造成物理损伤。调试前会备份原始设置。</div>
+      </div>
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-q">笔记本可以超频吗？<span style="color:var(--purple-l)">+</span></div>
+        <div class="faq-a">部分 Intel 笔记本支持有限超频。AMD 笔记本主要通过 Curve Optimizer 负压优化来降低温度、提升实际运行频率。具体能否超频取决于厂商的 BIOS 限制和散热模组。</div>
+      </div>
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-q">需要什么远程软件？<span style="color:var(--purple-l)">+</span></div>
+        <div class="faq-a">使用 ToDesk 或向日葵进行远程连接。这两款都是国内最主流的正规远程控制软件，免费使用，连接稳定延迟低。</div>
+      </div>
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-q">调试后重装系统会失效吗？<span style="color:var(--purple-l)">+</span></div>
+        <div class="faq-a">系统优化部分重装后会失效。但超频设置（BIOS 层面）不受重装系统影响。重装后可联系我们免费重新进行系统优化。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="container" style="text-align:center">
+    <div class="section-header">
+      <div class="section-label">CONTACT</div>
+      <h2>预约调试</h2>
+      <p>添加微信沟通需求，请备注"电脑调试"</p>
+      <div class="section-divider"></div>
+    </div>
+    <div class="team-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="team-card">
+        <img src="team-mx.jpg" class="team-avatar" alt="棉絮">
+        <div class="team-info">
+          <h4>棉絮</h4><div class="wx">微信：mrzhmxa</div>
+        </div>
+      </div>
+      <div class="team-card">
+        <img src="team-wmm.jpg" class="team-avatar" alt="雾蒙蒙">
+        <div class="team-info">
+          <h4>雾蒙蒙</h4><div class="wx">微信：biqili1783</div>
+        </div>
+      </div>
+      <div class="team-card">
+        <img src="team-tb.jpg" class="team-avatar" alt="汤包">
+        <div class="team-info">
+          <h4>汤包</h4><div class="wx">微信：Rui12Q</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:32px;display:inline-block;padding:32px 40px;border-radius:18px;background:var(--surface);border:1px solid var(--border)">
+      <img src="qq-group.jpg" style="width:180px;height:180px;border-radius:12px;object-fit:cover;margin-bottom:10px" alt="玩家交流群">
+      <div style="font-size:14px;font-weight:700;color:#d0c8e0">玩家交流群</div>
+      <div style="font-size:12px;color:var(--text-dim);margin-top:4px">QQ群：1016491950</div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <h3>浩博电竞优化团队</h3>
+  <p style="color:var(--text-dim);margin-bottom:12px">用心调试，以性能表达，用数据说话</p>
+  <div class="contact-row">
+    <div class="contact-item">📱 微信：mrzhmxa</div>
+    <div class="contact-item">📱 微信：biqili1783</div>
+    <div class="contact-item">📱 微信：Rui12Q</div>
+  </div>
+  <p class="copyright">© 2026 浩博电竞 · 电脑性能调校服务 · 明日之后专精 · 本服务为通用电脑优化，与任何游戏厂商无关联</p>
+</footer>
+
+<script>
+(function(){
+var cv=document.getElementById('bg-canvas'),ctx=cv.getContext('2d'),ps=[],m={x:-1e3,y:-1e3};
+function rs(){cv.width=window.innerWidth;cv.height=window.innerHeight}rs();window.addEventListener('resize',rs);
+document.addEventListener('mousemove',function(e){m.x=e.clientX;m.y=e.clientY});
+for(var i=0;i<45;i++)ps.push({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.5+.4,vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18});
+(function l(){ctx.clearRect(0,0,cv.width,cv.height);
+for(var i=0;i<ps.length;i++){var p=ps[i];p.x+=p.vx;p.y+=p.vy;
+if(p.x<-20)p.x=cv.width+20;if(p.x>cv.width+20)p.x=-20;if(p.y<-20)p.y=cv.height+20;if(p.y>cv.height+20)p.y=-20;
+var dx=m.x-p.x,dy=m.y-p.y,dist=Math.sqrt(dx*dx+dy*dy);
+if(dist<160){p.vx+=dx/dist*.012;p.vy+=dy/dist*.012;var s=Math.sqrt(p.vx*p.vx+p.vy*p.vy);if(s>1){p.vx=p.vx/s*1;p.vy=p.vy/s*1}}
+var a=.18+.1*Math.sin(Date.now()/2500+i);
+var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);
+g.addColorStop(0,'rgba(139,92,246,'+a+')');g.addColorStop(.5,'rgba(168,85,247,'+(a*.25)+')');g.addColorStop(1,'transparent');
+ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,p.r*3,0,Math.PI*2);ctx.fill();
+ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(180,140,250,'+(a+.06)+')';ctx.fill()}
+for(var i=0;i<ps.length;i++){for(var j=i+1;j<ps.length;j++){var dx2=ps[i].x-ps[j].x,dy2=ps[i].y-ps[j].y,d2=Math.sqrt(dx2*dx2+dy2*dy2);if(d2<80){ctx.strokeStyle='rgba(139,92,246,'+(.025*(1-d2/80))+')';ctx.lineWidth=.25;ctx.beginPath();ctx.moveTo(ps[i].x,ps[i].y);ctx.lineTo(ps[j].x,ps[j].y);ctx.stroke()}}}
+requestAnimationFrame(l)})();
+})();
+</script>
+</body>
+</html>
