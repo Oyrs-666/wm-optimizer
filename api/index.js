@@ -232,7 +232,7 @@ module.exports = async function(req, res) {
     }
 
     // === 版本检查 ===
-    if (p === '/api/version') return res.status(200).json({ version: '2.3.0' });
+    if (p === '/api/version') return res.status(200).json({ version: '2.3.1' });
 
     return res.status(404).json({ error: 'Not Found' });
   } catch(e) {
