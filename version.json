@@ -1,7 +1,7 @@
 {
-  "version": "2.3.2",
-  "releaseNotes": "v2.3.2 更新·FPS解锁核心五层安全加固 + VMProtect虚拟化保护 + SHA-256更新签名校验 + 文件夹弹窗Bug修复",
+  "version": "2.4.0",
+  "releaseNotes": "v2.4.0 更新 · 品牌更名「幸存者工具箱」+ 全新图标 · 帧率解锁扩展至8档(新增800/2000/3000/5000) · 游戏资源预加载功能上线 · 业务点单联系人卡片 · 性能优化",
   "downloadUrl": "https://wwars.lanzouq.com/wmyouhua",
-  "releaseDate": "2026-07-29",
-  "sha256": "5ADB840AA34891D243944B662421A646199DF89177C0BC09C8E01A79F6D8EE60"
+  "releaseDate": "2026-09-08",
+  "sha256": "4EFE7FB02BA223ACDA8B8D06B82165E9111BA5C6291BC92AC81C601C9BA251CA"
 }
